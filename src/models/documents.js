@@ -1,9 +1,11 @@
-export default class ProcessDocsData {
-  constructor(json) {
+import docsDataset from '../data/docs_dataset.json';
+
+export default class Documents {
+  constructor(json = docsDataset) {
     this.data = json.data?.docs || {};
   }
 
-  getProcessedData(limit = 20, offset = 0) {
+  getDocuments(limit = 20, offset = 0) {
     const dataToFetch = this.data.slice(offset, offset + limit);
     return dataToFetch.reduce((processedData, row) => {
       const processedRow = {};

@@ -1,5 +1,7 @@
-export default class ProcessDealsData {
-  constructor(json) {
+import dealsDataset from '../data/deals_dataset.json';
+
+export default class Deals {
+  constructor(json = dealsDataset) {
     this.data = json.data || {};
     this.holdings = this.data.Holdings || [];
     this.industries = this.buildHashMap('Industries', 'Id');
@@ -19,7 +21,7 @@ export default class ProcessDealsData {
     }, {});
   }
 
-  getProcessedData(limit = 20, offset = 0) {
+  getDeals(limit = 20, offset = 0) {
     const dataToFetch = this.holdings.slice(offset, offset + limit);
     return dataToFetch.reduce((processedData, row) => {
       const processedRow = {};
