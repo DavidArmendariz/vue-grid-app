@@ -1,9 +1,9 @@
 <template>
-  <div class="searchDeals">
+  <div class="search-deals">
     <h2>Search Deals</h2>
-    <div class="searchBarContainer">
+    <div class="search-bar-container">
       <input type="text" placeholder="Search" v-model="filter" />
-      <custom-icon class="searchIcon" icon="search" />
+      <custom-icon class="search-icon" icon="search" />
     </div>
   </div>
 </template>
@@ -19,18 +19,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.searchDeals {
+.search-deals {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
-.searchBarContainer {
+.search-bar-container {
   display: flex;
   align-items: center;
 }
 
-.searchIcon {
+.search-icon {
   margin-left: 10px;
   cursor: pointer;
 }

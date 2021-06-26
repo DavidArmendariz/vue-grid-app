@@ -3,20 +3,25 @@
     <div>Deals</div>
     <div class="header">
       <search-deals />
-      <export-button class="export-button" />
+      <div class="buttons">
+        <columns-filter />
+        <export-button />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import Deals from '@/models/deals';
-import SearchDeals from '@/components/SearchDeals.vue';
-import ExportButton from '@/components/ExportButton.vue';
+import Deals from '../models/deals';
+import SearchDeals from '../components/SearchDeals.vue';
+import ExportButton from '../components/ExportButton.vue';
+import ColumnsFilter from '../components/ColumnsFilter.vue';
 
 export default {
   components: {
     SearchDeals,
     ExportButton,
+    ColumnsFilter,
   },
   provide: {
     deals: new Deals(),
@@ -34,7 +39,7 @@ export default {
   align-items: center;
 }
 
-.export-button {
+.buttons {
   margin-left: auto;
 }
 </style>
