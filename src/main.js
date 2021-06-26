@@ -2,8 +2,14 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-createApp(App)
-  .use(store)
-  .use(router)
-  .mount('#app');
+library.add(faSearch);
+
+const app = createApp(App);
+app.component('custom-icon', FontAwesomeIcon);
+app.use(store);
+app.use(router);
+app.mount('#app');
