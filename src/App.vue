@@ -1,10 +1,17 @@
 <template>
-  <div id="nav">
-    <router-link to="/deals">Deals</router-link> |
-    <router-link to="/documents">Documents</router-link>
-  </div>
+  <the-navigation />
   <router-view />
 </template>
+
+<script>
+import TheNavigation from './components/TheNavigation.vue';
+
+export default {
+  components: {
+    TheNavigation,
+  },
+};
+</script>
 
 <style lang="scss">
 #app {
@@ -13,18 +20,5 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
 }
 </style>

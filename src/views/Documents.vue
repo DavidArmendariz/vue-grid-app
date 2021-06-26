@@ -1,5 +1,15 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
+  <div>
+    Documents
   </div>
 </template>
+
+<script>
+import Documents from '../models/documents';
+
+export default {
+  provide: {
+    deals: new Documents(),
+  },
+};
+</script>
