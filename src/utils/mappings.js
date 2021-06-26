@@ -16,4 +16,5 @@ export const COLUMNS_MAP = {
   analysts: 'Analysts',
   docCount: 'Doc Count',
   customField: 'Custom Field',
+  dealId: 'Deal ID',
 };

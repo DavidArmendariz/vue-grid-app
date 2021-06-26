@@ -98,7 +98,7 @@ export default {
     float: left;
     cursor: pointer;
     &.active {
-      background-color: #42b983;
+      background-color: #e7ecf0;
     }
   }
 }

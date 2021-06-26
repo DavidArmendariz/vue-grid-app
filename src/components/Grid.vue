@@ -45,4 +45,11 @@ export default {
 .grid {
   overflow-x: auto;
 }
+
+th {
+  background-color: #e7ecf0;
+  cursor: pointer;
+  color: #5c99b7;
+  padding: 1rem;
+}
 </style>
