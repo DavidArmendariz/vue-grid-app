@@ -1,3 +1,6 @@
+import { COLUMNS_MAP } from './mappings';
+import { MAX_PAGINATION } from './constants';
+
 export default class Utils {
   static getColumnKeys(data) {
     return Object.keys(data[0]);
@@ -11,3 +14,5 @@ export default class Utils {
     return encodeURI(csvContent);
   }
 }
+
+export { COLUMNS_MAP, MAX_PAGINATION };

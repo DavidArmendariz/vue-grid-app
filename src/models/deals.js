@@ -21,8 +21,8 @@ export default class Deals {
     }, {});
   }
 
-  getDeals(options) {
-    const { all = false, offset = 0, limit = 20 } = options;
+  getDeals(options = {}) {
+    const { all = false, offset = 0, limit = 10 } = options;
     const dataToFetch = all ? this.holdings : this.holdings.slice(offset, offset + limit);
     const deals = dataToFetch.reduce((processedData, row) => {
       const processedRow = {};
@@ -48,10 +48,16 @@ export default class Deals {
       processedData.push(processedRow);
       return processedData;
     }, []);
+
     return {
       data: deals,
       total: deals.length,
+      paginationCount: this.getPaginationCount(limit),
     };
+  }
+
+  getPaginationCount(limit) {
+    return Math.ceil(this.holdings.length / limit);
   }
 
   getAnalystsFromIds(ids) {

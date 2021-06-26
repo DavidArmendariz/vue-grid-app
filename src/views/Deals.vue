@@ -1,6 +1,5 @@
 <template>
   <div class="deals">
-    <div>Deals</div>
     <div class="header">
       <search-deals />
       <div class="buttons">
@@ -8,6 +7,10 @@
         <export-button />
       </div>
     </div>
+    <div>
+      <grid :filteredData="filteredData" />
+    </div>
+    <pagination :paginationCount="paginationCount" />
   </div>
 </template>
 
@@ -16,15 +19,31 @@ import Deals from '../models/deals';
 import SearchDeals from '../components/SearchDeals.vue';
 import ExportButton from '../components/ExportButton.vue';
 import ColumnsFilter from '../components/ColumnsFilter.vue';
+import Grid from '../components/Grid.vue';
+import Pagination from '../components/Pagination.vue';
 
 export default {
   components: {
     SearchDeals,
     ExportButton,
     ColumnsFilter,
+    Grid,
+    Pagination,
   },
-  provide: {
-    deals: new Deals(),
+  data() {
+    return {
+      deals: new Deals(),
+      filteredData: [],
+      paginationCount: 0,
+    };
+  },
+  provide() {
+    return { deals: this.deals };
+  },
+  mounted() {
+    const { data } = this.deals.getDeals();
+    this.filteredData = data;
+    this.paginationCount = 100;
   },
 };
 </script>
@@ -37,6 +56,7 @@ export default {
 .header {
   display: flex;
   align-items: center;
+  margin-bottom: 1rem;
 }
 
 .buttons {
