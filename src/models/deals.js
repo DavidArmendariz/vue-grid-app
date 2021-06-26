@@ -21,9 +21,10 @@ export default class Deals {
     }, {});
   }
 
-  getDeals(limit = 20, offset = 0) {
-    const dataToFetch = this.holdings.slice(offset, offset + limit);
-    return dataToFetch.reduce((processedData, row) => {
+  getDeals(options) {
+    const { all = false, offset = 0, limit = 20 } = options;
+    const dataToFetch = all ? this.holdings : this.holdings.slice(offset, offset + limit);
+    const deals = dataToFetch.reduce((processedData, row) => {
       const processedRow = {};
       processedRow.id = row.Id;
       processedRow.issuer = this.clientIssuers[row.IssuerId]?.IssuerName;
@@ -47,6 +48,10 @@ export default class Deals {
       processedData.push(processedRow);
       return processedData;
     }, []);
+    return {
+      data: deals,
+      total: deals.length,
+    };
   }
 
   getAnalystsFromIds(ids) {
