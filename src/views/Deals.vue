@@ -45,9 +45,6 @@ export default {
       totalRows: 0,
     };
   },
-  provide() {
-    return { deals: this.deals, updateData: this.updateData };
-  },
   mounted() {
     const queryParams = this.$route.query;
     const response = this.deals.getData({ ...queryParams, limit: LIMIT });
@@ -79,6 +76,7 @@ export default {
           offset: LIMIT * (offset - 1),
           limit: LIMIT,
           search: newRoute.query.search,
+          columns: newRoute.query.columns || [],
         });
         this.updateData(newData);
       }
@@ -88,6 +86,18 @@ export default {
           offset: 0,
           limit: LIMIT,
           search: newRoute.query.search,
+          columns: newRoute.query.columns || [],
+        });
+        this.updateData(newData);
+      }
+
+      if (newRoute.query.columns !== oldRoute.query.columns) {
+        const offset = parseInt(newRoute.query.offset) || 1;
+        const newData = this.deals.getData({
+          offset: LIMIT * (offset - 1),
+          limit: LIMIT,
+          search: newRoute.query.search,
+          columns: newRoute.query.columns || [],
         });
         this.updateData(newData);
       }

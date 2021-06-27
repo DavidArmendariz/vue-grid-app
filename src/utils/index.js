@@ -1,4 +1,4 @@
-import { COLUMNS_MAP, COLUMNS_TYPES } from './mappings';
+import { COLUMNS_MAP, DEALS_COLUMNS_TYPES } from './mappings';
 import { MAX_PAGINATION, LIMIT } from './constants';
 
 export default class Utils {
@@ -19,4 +19,4 @@ export default class Utils {
   }
 }
 
-export { COLUMNS_MAP, MAX_PAGINATION, LIMIT, COLUMNS_TYPES };
+export { COLUMNS_MAP, MAX_PAGINATION, LIMIT, DEALS_COLUMNS_TYPES };

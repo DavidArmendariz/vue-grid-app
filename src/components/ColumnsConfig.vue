@@ -53,7 +53,7 @@ export default {
     },
     onSave() {
       const filteredColumns = this.columnsInfo.filter((column) => column.checked).map((column) => column.key);
-      console.log(filteredColumns);
+      this.$router.push({ query: { columns: encodeURIComponent(filteredColumns) } });
     },
   },
 };

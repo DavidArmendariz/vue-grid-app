@@ -19,7 +19,7 @@ export const COLUMNS_MAP = {
   dealId: 'Deal ID',
 };
 
-export const COLUMNS_TYPES = {
+export const DEALS_COLUMNS_TYPES = {
   id: Number,
   issuer: String,
   dealName: String,
