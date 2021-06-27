@@ -1,14 +1,20 @@
 <template>
   <div class="deals">
     <div class="header">
-      <search-deals />
+      <search-deals>
+        <template v-slot:title>
+          <h2>Search Deals</h2>
+        </template>
+      </search-deals>
       <div class="buttons">
         <columns-config :columnsShown="columnsShown" />
         <export-button />
       </div>
     </div>
     <div>
-      <grid :filteredData="filteredData" dataType="deals" :totalRows="totalRows" />
+      <grid :filteredData="filteredData" dataType="deals" :totalRows="totalRows">
+        <template v-slot:headerMessage>{{ headerMessage }}</template>
+      </grid>
     </div>
     <pagination :paginationCount="paginationCount" />
   </div>
@@ -59,6 +65,9 @@ export default {
         result[columnKey] = true;
         return result;
       }, {});
+    },
+    headerMessage() {
+      return `Showing ${this.totalRows} deals.`;
     },
   },
   watch: {

@@ -32,14 +32,22 @@ export default {
   data() {
     return {
       showConfig: false,
-      columnsInfo: Object.keys(COLUMNS_MAP).map((columnKey) => ({
+      columnsInfo: [],
+    };
+  },
+  watch: {
+    columnsShown() {
+      this.columnsInfo = this.updateColumnsInfo();
+    },
+  },
+  methods: {
+    updateColumnsInfo() {
+      return Object.keys(COLUMNS_MAP).map((columnKey) => ({
         key: columnKey,
         name: COLUMNS_MAP[columnKey],
         checked: !!this.columnsShown[columnKey],
-      })),
-    };
-  },
-  methods: {
+      }));
+    },
     onClickConfig() {
       this.showConfig = !this.showConfig;
     },
@@ -63,7 +71,6 @@ export default {
   position: absolute;
   padding: 1rem;
   z-index: 1;
-  float: right;
   right: 0;
 }
 

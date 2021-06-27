@@ -3,12 +3,12 @@
     <table>
       <thead>
         <tr>
-          <th v-for="columnName in columnNames" :key="columnName">
-            {{ columnName }}
+          <th v-for="column in columns" :key="column.key">
+            {{ column.name }}
           </th>
         </tr>
         <tr>
-          <th class="header-message" colspan="100%">{{ headerMessage }}</th>
+          <th class="header-message" colspan="100%"><slot name="headerMessage" /></th>
         </tr>
       </thead>
       <tbody>
@@ -26,7 +26,7 @@
 import Utils, { COLUMNS_MAP } from '../utils';
 
 export default {
-  props: ['filteredData', 'dataType', 'totalRows'],
+  props: ['filteredData'],
   computed: {
     columnKeys() {
       if (this.filteredData.length) {
@@ -34,14 +34,11 @@ export default {
       }
       return [];
     },
-    columnNames() {
+    columns() {
       if (this.filteredData.length) {
-        return this.columnKeys.map((key) => COLUMNS_MAP[key]);
+        return this.columnKeys.map((key) => ({ key, name: COLUMNS_MAP[key] }));
       }
       return [];
-    },
-    headerMessage() {
-      return `Showing ${this.totalRows} ${this.dataType}.`;
     },
   },
 };

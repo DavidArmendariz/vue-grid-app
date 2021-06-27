@@ -1,6 +1,6 @@
 <template>
   <div class="search-deals">
-    <h2>Search Deals</h2>
+    <slot name="title"></slot>
     <div class="search-bar-container">
       <input type="text" placeholder="Search" v-model="filter" />
       <custom-icon class="search-icon" icon="search" />
