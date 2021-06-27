@@ -39,3 +39,25 @@ export const DEALS_COLUMNS_TYPES = {
   customField: String,
   dealId: Number,
 };
+
+export const DOCS_COLUMNS_MAP = {
+  id: 'ID',
+  dealId: 'Deal ID',
+  documentName: 'Document name',
+  tag: 'Tag',
+  posted: 'Posted',
+  lastAccessed: 'Last accessed',
+  note: 'Note',
+  filePath: 'File path',
+};
+
+export const DOCS_COLUMNS_TYPES = {
+  id: Number,
+  dealId: Number,
+  documentName: String,
+  tag: String,
+  posted: Date,
+  lastAccessed: Date,
+  note: String,
+  filePath: String,
+};

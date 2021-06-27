@@ -16,7 +16,8 @@ export default class Deals extends BaseModel {
     this.mainTableData = this.holdings;
   }
 
-  reduceDealsData(fetchedData) {
+  reduceDealsData() {
+    const fetchedData = this.getMainTableData();
     return fetchedData.reduce((processedData, row) => {
       const processedRow = {
         ...(this.columns.id && { id: row.Id }),
@@ -45,10 +46,9 @@ export default class Deals extends BaseModel {
 
   getData(options = {}) {
     this.setFetchOptions(options);
-    const fetchedData = this.getMainTableData();
-
     this.setColumnsToDisplay();
-    let deals = this.reduceDealsData(fetchedData);
+
+    let deals = this.reduceDealsData();
     deals = this.filterRowsBySearchString(deals);
 
     return {
