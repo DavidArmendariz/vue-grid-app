@@ -5,6 +5,14 @@ export default class BaseModel {
     this.fetchOptions = {};
     this.limit = limit;
     this.columnsTypes = columnsTypes;
+    this.columns = this.buildColumnsMap();
+  }
+
+  buildColumnsMap(flag = true) {
+    return Object.keys(this.columnsTypes).reduce((result, columnKey) => {
+      result[columnKey] = flag;
+      return result;
+    }, {});
   }
 
   setFetchOptions(options) {
@@ -35,7 +43,13 @@ export default class BaseModel {
   }
 
   filterRowsBySearchString(data) {
-    const loweredSearchString = decodeURIComponent(this.fetchOptions.search).toLowerCase();
+    const { search } = this.fetchOptions;
+
+    if (!search) {
+      return data;
+    }
+
+    const loweredSearchString = decodeURIComponent(search).toLowerCase();
     return data.filter((row) => {
       let containsSearchString = false;
       for (const [columnKey, value] of Object.entries(row)) {
@@ -68,5 +82,26 @@ export default class BaseModel {
     const total = this.getTotal(data);
     const division = Math.ceil(total / this.limit);
     return total && total % this.limit === 0 ? division - 1 : division;
+  }
+
+  setColumnsToDisplay() {
+    const { columns = '' } = this.fetchOptions;
+    try {
+      const columnsToDisplay = decodeURIComponent(columns).split(',');
+
+      if (!columns || !columnsToDisplay.length) {
+        this.columns = this.buildColumnsMap();
+        return;
+      }
+
+      this.columns = this.buildColumnsMap(false);
+
+      columnsToDisplay.forEach((columnToDisplay) => {
+        this.columns[columnToDisplay] = true;
+      });
+    } catch (err) {
+      console.error('Something went wrong: ', err);
+      this.columns = this.buildColumnsMap();
+    }
   }
 }

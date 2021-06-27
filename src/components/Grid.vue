@@ -47,6 +47,8 @@ export default {
 <style lang="scss" scoped>
 .grid {
   overflow-x: auto;
+  display: flex;
+  justify-content: center;
 }
 
 th {

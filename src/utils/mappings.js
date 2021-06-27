@@ -37,4 +37,5 @@ export const DEALS_COLUMNS_TYPES = {
   analysts: Array,
   docCount: Number,
   customField: String,
+  dealId: Number,
 };

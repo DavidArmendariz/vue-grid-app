@@ -14,7 +14,7 @@
       <div class="filters-buttons">
         <base-button @click="onSave">Save</base-button>
         <base-button @click="onClickConfig">Cancel</base-button>
-        <base-button>Reset</base-button>
+        <base-button @click="onReset">Reset</base-button>
       </div>
     </div>
   </div>
@@ -48,11 +48,20 @@ export default {
         checked: !!this.columnsShown[columnKey],
       }));
     },
+    onReset() {
+      this.columnsInfo = Object.keys(COLUMNS_MAP).map((columnKey) => ({
+        key: columnKey,
+        name: COLUMNS_MAP[columnKey],
+        checked: true,
+      }));
+      this.onSave();
+    },
     onClickConfig() {
       this.showConfig = !this.showConfig;
     },
     onSave() {
       const filteredColumns = this.columnsInfo.filter((column) => column.checked).map((column) => column.key);
+      this.showConfig = false;
       this.$router.push({ query: { columns: encodeURIComponent(filteredColumns) } });
     },
   },

@@ -18,26 +18,26 @@ export default class Deals extends BaseModel {
 
   reduceDealsData(fetchedData) {
     return fetchedData.reduce((processedData, row) => {
-      const processedRow = {};
-      processedRow.id = row.Id;
-      processedRow.issuer = this.clientIssuers[row.IssuerId]?.IssuerName?.trim();
-      processedRow.dealName = row.DealName?.trim();
-      processedRow.bloombergId = null; // Not present
-      processedRow.isIn = null; // Not present
-      processedRow.customDealIdentifiers = row.CustomIdentifiers;
-      processedRow.customIssuerIdentifiers = row.CustomClientIssuersIdentifiers;
-      processedRow.industry = this.industries[row.IndustryId]?.IndustryName;
-      processedRow.agent = this.agents[row.AgentId]?.CompanyName;
-      processedRow.source = this.sources[row.SourceId]?.SourceName;
-      processedRow.status = null; // Not present
-      processedRow.total = row.Total;
-      processedRow.lastPosted = row.LastPosted;
-      processedRow.lastAccessed = row.LastAccessed;
-      processedRow.analysts = this.getAnalystsFromIds(row.AnalystIds);
-      processedRow.docCount = row.DocCount;
-      processedRow.customField = row.ClientCustomField;
-      // dealId to link it to a document
-      processedRow.dealId = row.DealId;
+      const processedRow = {
+        ...(this.columns.id && { id: row.id }),
+        ...(this.columns.issuer && { issuer: this.clientIssuers[row.IssuerId]?.IssuerName?.trim() }),
+        ...(this.columns.dealName && { dealName: row.DealName?.trim() }),
+        ...(this.columns.bloombergId && { bloombergId: null }), // Not present
+        ...(this.columns.isIn && { isIn: null }), // Not present
+        ...(this.columns.customDealIdentifiers && { customDealIdentifiers: row.CustomIdentifiers }),
+        ...(this.columns.customIssuerIdentifiers && { customIssuerIdentifiers: row.CustomClientIssuersIdentifiers }),
+        ...(this.columns.industry && { industry: this.industries[row.IndustryId]?.IndustryName?.trim() }),
+        ...(this.columns.agent && { agent: this.agents[row.AgentId]?.CompanyName?.trim() }),
+        ...(this.columns.source && { source: this.sources[row.SourceId]?.SourceName?.trim() }),
+        ...(this.columns.status && { status: null }), // Not present
+        ...(this.columns.total && { total: row.Total }),
+        ...(this.columns.lastPosted && { lastPosted: row.LastPosted }),
+        ...(this.columns.lastAccessed && { lastAccessed: row.LastAccessed }),
+        ...(this.columns.analysts && { analysts: this.getAnalystsFromIds(row.AnalystIds) }),
+        ...(this.columns.docCount && { docCount: row.DocCount }),
+        ...(this.columns.customField && { customField: row.ClientCustomField }),
+        ...(this.columns.dealId && { dealId: row.DealId }), // dealId to link it to a document
+      };
       processedData.push(processedRow);
       return processedData;
     }, []);
@@ -45,13 +45,11 @@ export default class Deals extends BaseModel {
 
   getData(options = {}) {
     this.setFetchOptions(options);
-    const { search } = this.fetchOptions;
     const fetchedData = this.getmainTableData();
-    let deals = this.reduceDealsData(fetchedData);
 
-    if (search) {
-      deals = this.filterRowsBySearchString(deals);
-    }
+    this.setColumnsToDisplay();
+    let deals = this.reduceDealsData(fetchedData);
+    deals = this.filterRowsBySearchString(deals);
 
     return {
       data: this.limitData(deals),
