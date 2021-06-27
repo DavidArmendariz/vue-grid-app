@@ -1,17 +1,14 @@
 import { DEALS_COLUMNS_MAP, DEALS_COLUMNS_TYPES, DOCS_COLUMNS_MAP, DOCS_COLUMNS_TYPES } from './mappings';
 import { MAX_PAGINATION, LIMIT } from './constants';
+import Papa from 'papaparse';
 
 export default class Utils {
   static getColumnKeys(data) {
     return Object.keys(data[0] || {});
   }
 
-  static getEncodedCSVContent(data) {
-    let csvContent = 'data:text/csv;charset=utf-8,';
-    csvContent += [this.getColumnKeys(data).join(';'), ...data.map((row) => Object.values(row).join(';'))]
-      .join('\n')
-      .replace(/(^\[)|(\]$)/gm, '');
-    return encodeURI(csvContent);
+  static getCSVContent(data) {
+    return Papa.unparse(data, { delimiter: ';' });
   }
 
   static joinArray(arr, sep = ',') {

@@ -18,11 +18,16 @@ export default {
   methods: {
     exportDealsData() {
       const { data } = this.model.getData({ all: true });
-      const encodedData = Utils.getEncodedCSVContent(data);
+      const encodedData = Utils.getCSVContent(data);
+      const blob = new Blob([encodedData], { type: 'text/csv' });
       const link = document.createElement('a');
-      link.setAttribute('href', encodedData);
-      link.setAttribute('download', this.fileName);
+      const csvUrl = URL.createObjectURL(blob);
+      link.href = csvUrl;
+      link.style = 'visibility:hidden';
+      link.download = this.fileName;
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
     },
   },
 };
