@@ -7,12 +7,18 @@
         </template>
       </search-bar>
       <div class="buttons">
-        <columns-config :columnsShown="columnsShown" />
+        <columns-config :columnsShown="columnsShown" :columnsMap="columnsMap" />
         <export-button :model="deals" fileName="deals_data.csv" />
       </div>
     </div>
     <div>
-      <grid :filteredData="filteredData" dataType="deals" :totalRows="totalRows">
+      <grid
+        :filteredData="filteredData"
+        dataType="deals"
+        :totalRows="totalRows"
+        :columnsMap="columnsMap"
+        :columnsTypes="columnsTypes"
+      >
         <template v-slot:headerMessage>{{ headerMessage }}</template>
       </grid>
     </div>
@@ -27,7 +33,7 @@ import ExportButton from '../components/ExportButton.vue';
 import ColumnsConfig from '../components/ColumnsConfig.vue';
 import Grid from '../components/Grid.vue';
 import Pagination from '../components/Pagination.vue';
-import Utils, { LIMIT } from '../utils';
+import Utils, { LIMIT, DEALS_COLUMNS_MAP, DEALS_COLUMNS_TYPES } from '../utils';
 
 export default {
   components: {
@@ -44,6 +50,10 @@ export default {
       paginationCount: 0,
       totalRows: 0,
     };
+  },
+  created() {
+    this.columnsMap = DEALS_COLUMNS_MAP;
+    this.columnsTypes = DEALS_COLUMNS_TYPES;
   },
   mounted() {
     const queryParams = this.$route.query;
@@ -76,7 +86,7 @@ export default {
           offset: LIMIT * (offset - 1),
           limit: LIMIT,
           search: newRoute.query.search,
-          columns: newRoute.query.columns || [],
+          columns: newRoute.query.columns || '',
         });
         this.updateData(newData);
       }
@@ -86,7 +96,7 @@ export default {
           offset: 0,
           limit: LIMIT,
           search: newRoute.query.search,
-          columns: newRoute.query.columns || [],
+          columns: newRoute.query.columns || '',
         });
         this.updateData(newData);
       }
@@ -97,7 +107,7 @@ export default {
           offset: LIMIT * (offset - 1),
           limit: LIMIT,
           search: newRoute.query.search,
-          columns: newRoute.query.columns || [],
+          columns: newRoute.query.columns || '',
         });
         this.updateData(newData);
       }

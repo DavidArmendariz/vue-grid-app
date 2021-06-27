@@ -22,10 +22,9 @@
 
 <script>
 import BaseButton from './BaseButton.vue';
-import { COLUMNS_MAP } from '../utils';
 
 export default {
-  props: ['columnsShown'],
+  props: ['columnsShown', 'columnsMap'],
   components: {
     BaseButton,
   },
@@ -42,16 +41,16 @@ export default {
   },
   methods: {
     updateColumnsInfo() {
-      return Object.keys(COLUMNS_MAP).map((columnKey) => ({
+      return Object.keys(this.columnsMap).map((columnKey) => ({
         key: columnKey,
-        name: COLUMNS_MAP[columnKey],
+        name: this.columnsMap[columnKey],
         checked: !!this.columnsShown[columnKey],
       }));
     },
     onReset() {
-      this.columnsInfo = Object.keys(COLUMNS_MAP).map((columnKey) => ({
+      this.columnsInfo = Object.keys(this.columnsMap).map((columnKey) => ({
         key: columnKey,
-        name: COLUMNS_MAP[columnKey],
+        name: this.columnsMap[columnKey],
         checked: true,
       }));
       this.onSave();
@@ -62,7 +61,8 @@ export default {
     onSave() {
       const filteredColumns = this.columnsInfo.filter((column) => column.checked).map((column) => column.key);
       this.showConfig = false;
-      this.$router.push({ query: { columns: encodeURIComponent(filteredColumns) } });
+      const existingQueryParams = this.$route.query;
+      this.$router.push({ query: { ...existingQueryParams, columns: encodeURIComponent(filteredColumns) } });
     },
   },
 };

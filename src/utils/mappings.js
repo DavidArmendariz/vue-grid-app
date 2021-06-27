@@ -1,4 +1,4 @@
-export const COLUMNS_MAP = {
+export const DEALS_COLUMNS_MAP = {
   id: 'ID',
   issuer: 'Issuer',
   dealName: 'Deal name',

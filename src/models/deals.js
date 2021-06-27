@@ -19,7 +19,7 @@ export default class Deals extends BaseModel {
   reduceDealsData(fetchedData) {
     return fetchedData.reduce((processedData, row) => {
       const processedRow = {
-        ...(this.columns.id && { id: row.id }),
+        ...(this.columns.id && { id: row.Id }),
         ...(this.columns.issuer && { issuer: this.clientIssuers[row.IssuerId]?.IssuerName?.trim() }),
         ...(this.columns.dealName && { dealName: row.DealName?.trim() }),
         ...(this.columns.bloombergId && { bloombergId: null }), // Not present

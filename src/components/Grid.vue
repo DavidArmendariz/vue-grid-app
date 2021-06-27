@@ -12,9 +12,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="row in filteredData" :key="row.id">
+        <tr class="custom-row" v-for="row in filteredData" :key="row.id">
           <td v-for="columnKey in columnKeys" :key="`${row.id}-${columnKey}`">
-            {{ row[columnKey] }}
+            {{ processRow(columnKey, row[columnKey]) }}
           </td>
         </tr>
       </tbody>
@@ -23,10 +23,10 @@
 </template>
 
 <script>
-import Utils, { COLUMNS_MAP } from '../utils';
+import Utils from '../utils';
 
 export default {
-  props: ['filteredData'],
+  props: ['filteredData', 'columnsMap', 'columnsTypes'],
   computed: {
     columnKeys() {
       if (this.filteredData.length) {
@@ -36,9 +36,24 @@ export default {
     },
     columns() {
       if (this.filteredData.length) {
-        return this.columnKeys.map((key) => ({ key, name: COLUMNS_MAP[key] }));
+        return this.columnKeys.map((key) => ({ key, name: this.columnsMap[key] }));
       }
       return [];
+    },
+  },
+  methods: {
+    processRow(columnKey, row) {
+      if (!row) {
+        return '(blank)';
+      }
+      switch (this.columnsTypes[columnKey]) {
+        case Array:
+          return row.join(', ');
+        case Date:
+          return new Date(Date.parse(row)).toLocaleString();
+        default:
+          return row;
+      }
     },
   },
 };
@@ -63,5 +78,15 @@ th {
   text-align: left;
   color: black;
   font-weight: 100;
+}
+
+.custom-row {
+  &:nth-child(even) {
+    background-color: #f7f4f4;
+  }
+}
+
+table {
+  border-collapse: collapse;
 }
 </style>

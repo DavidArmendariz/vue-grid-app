@@ -86,6 +86,7 @@ export default class BaseModel {
 
   setColumnsToDisplay() {
     const { columns = '' } = this.fetchOptions;
+
     try {
       const columnsToDisplay = decodeURIComponent(columns).split(',');
 
