@@ -45,7 +45,8 @@ export default {
       this.addOffsetQueryParam();
     },
     addOffsetQueryParam() {
-      this.$router.push({ query: { offset: this.activePagination } });
+      const existingQueryParams = this.$route.query;
+      this.$router.push({ query: { ...existingQueryParams, offset: this.activePagination } });
     },
   },
   watch: {

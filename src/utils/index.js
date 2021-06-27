@@ -1,4 +1,4 @@
-import { COLUMNS_MAP } from './mappings';
+import { COLUMNS_MAP, COLUMNS_TYPES } from './mappings';
 import { MAX_PAGINATION, LIMIT } from './constants';
 
 export default class Utils {
@@ -13,6 +13,10 @@ export default class Utils {
       .replace(/(^\[)|(\]$)/gm, '');
     return encodeURI(csvContent);
   }
+
+  static joinArray(arr, sep = ',') {
+    return arr.join(sep + ' ');
+  }
 }
 
-export { COLUMNS_MAP, MAX_PAGINATION, LIMIT };
+export { COLUMNS_MAP, MAX_PAGINATION, LIMIT, COLUMNS_TYPES };

@@ -10,17 +10,17 @@ import BaseButton from './BaseButton.vue';
 import Utils from '../utils';
 
 export default {
+  props: ['fileName', 'model'],
   components: {
     BaseButton,
   },
-  inject: ['deals'],
   methods: {
     exportDealsData() {
-      const { data } = this.deals.getDeals({ all: true });
+      const { data } = this.model.getData();
       const encodedData = Utils.getEncodedCSVContent(data);
       const link = document.createElement('a');
       link.setAttribute('href', encodedData);
-      link.setAttribute('download', 'deals_data.csv');
+      link.setAttribute('download', this.fileName);
       link.click();
     },
   },

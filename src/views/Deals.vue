@@ -1,14 +1,14 @@
 <template>
   <div class="deals">
     <div class="header">
-      <search-deals>
+      <search-bar>
         <template v-slot:title>
           <h2>Search Deals</h2>
         </template>
-      </search-deals>
+      </search-bar>
       <div class="buttons">
         <columns-config :columnsShown="columnsShown" />
-        <export-button />
+        <export-button :model="deals" fileName="deals_data.csv" />
       </div>
     </div>
     <div>
@@ -22,7 +22,7 @@
 
 <script>
 import Deals from '../models/deals';
-import SearchDeals from '../components/SearchDeals.vue';
+import SearchBar from '../components/SearchBar.vue';
 import ExportButton from '../components/ExportButton.vue';
 import ColumnsConfig from '../components/ColumnsConfig.vue';
 import Grid from '../components/Grid.vue';
@@ -31,7 +31,7 @@ import Utils, { LIMIT } from '../utils';
 
 export default {
   components: {
-    SearchDeals,
+    SearchBar,
     ExportButton,
     ColumnsConfig,
     Grid,
@@ -49,7 +49,8 @@ export default {
     return { deals: this.deals, updateData: this.updateData };
   },
   mounted() {
-    const response = this.deals.getDeals({ limit: LIMIT });
+    const queryParams = this.$route.query;
+    const response = this.deals.getData({ ...queryParams, limit: LIMIT });
     this.updateData(response);
   },
   methods: {
@@ -74,7 +75,20 @@ export default {
     $route(newRoute, oldRoute) {
       if (newRoute.query.offset !== oldRoute.query.offset) {
         const offset = parseInt(newRoute.query.offset) || 1;
-        const newData = this.deals.getDeals({ offset: LIMIT * (offset - 1), limit: LIMIT });
+        const newData = this.deals.getData({
+          offset: LIMIT * (offset - 1),
+          limit: LIMIT,
+          search: newRoute.query.search,
+        });
+        this.updateData(newData);
+      }
+
+      if (newRoute.query.search !== oldRoute.query.search) {
+        const newData = this.deals.getData({
+          offset: 0,
+          limit: LIMIT,
+          search: newRoute.query.search,
+        });
         this.updateData(newData);
       }
     },

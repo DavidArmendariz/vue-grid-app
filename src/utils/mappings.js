@@ -18,3 +18,23 @@ export const COLUMNS_MAP = {
   customField: 'Custom Field',
   dealId: 'Deal ID',
 };
+
+export const COLUMNS_TYPES = {
+  id: Number,
+  issuer: String,
+  dealName: String,
+  bloombergId: String,
+  isIn: String,
+  customDealIdentifiers: Array,
+  customIssuerIdentifiers: Array,
+  industry: String,
+  agent: String,
+  source: String,
+  status: String,
+  total: Number,
+  lastPosted: Date,
+  lastAccessed: Date,
+  analysts: Array,
+  docCount: Number,
+  customField: String,
+};

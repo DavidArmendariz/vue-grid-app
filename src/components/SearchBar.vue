@@ -2,8 +2,8 @@
   <div class="search-deals">
     <slot name="title"></slot>
     <div class="search-bar-container">
-      <input type="text" placeholder="Search" v-model="filter" />
-      <custom-icon class="search-icon" icon="search" />
+      <input type="text" placeholder="Search" v-model="filter" @keyup.enter="onSearch" />
+      <custom-icon class="search-icon" icon="search" @click="onSearch" />
     </div>
   </div>
 </template>
@@ -12,8 +12,14 @@
 export default {
   data() {
     return {
-      filter: '',
+      filter: decodeURIComponent(this.$route.query.search || ''),
     };
+  },
+  methods: {
+    onSearch() {
+      const encodedSearchString = encodeURIComponent(this.filter);
+      this.$router.push({ query: { search: encodedSearchString } });
+    },
   },
 };
 </script>
