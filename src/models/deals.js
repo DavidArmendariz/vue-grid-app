@@ -45,7 +45,7 @@ export default class Deals extends BaseModel {
 
   getData(options = {}) {
     this.setFetchOptions(options);
-    const fetchedData = this.getmainTableData();
+    const fetchedData = this.getMainTableData();
 
     this.setColumnsToDisplay();
     let deals = this.reduceDealsData(fetchedData);

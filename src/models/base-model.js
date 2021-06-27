@@ -16,7 +16,31 @@ export default class BaseModel {
   }
 
   setFetchOptions(options) {
-    this.fetchOptions = options;
+    const { offset, columns, search } = options;
+
+    let processedOffset = 0;
+    let processedColumns = [];
+    let processedSearch = '';
+
+    if (offset) {
+      processedOffset = parseInt(offset);
+    }
+
+    if (columns) {
+      processedColumns = decodeURIComponent(columns).split(',');
+    }
+
+    if (search) {
+      processedSearch = decodeURIComponent(search);
+    }
+
+    const fetchOptions = {
+      offset: processedOffset,
+      columns: processedColumns,
+      search: processedSearch,
+    };
+
+    this.fetchOptions = fetchOptions;
   }
 
   buildHashMap(key, idKey) {
@@ -33,12 +57,12 @@ export default class BaseModel {
     return [...new Set(allData.map((row) => row[columnKey]))];
   }
 
-  getmainTableData() {
+  getMainTableData() {
     return this.mainTableData;
   }
 
   limitData(data) {
-    const { offset = 0 } = this.fetchOptions;
+    const { offset } = this.fetchOptions;
     return data.slice(offset, offset + this.limit);
   }
 
@@ -49,7 +73,7 @@ export default class BaseModel {
       return data;
     }
 
-    const loweredSearchString = decodeURIComponent(search).toLowerCase();
+    const loweredSearchString = search.toLowerCase();
     return data.filter((row) => {
       let containsSearchString = false;
       for (const [columnKey, value] of Object.entries(row)) {
@@ -75,7 +99,7 @@ export default class BaseModel {
   }
 
   getTotal(data) {
-    return Math.min(data.length, this.getmainTableData().length);
+    return Math.min(data.length, this.getMainTableData().length);
   }
 
   getPaginationCount(data) {
@@ -85,24 +109,17 @@ export default class BaseModel {
   }
 
   setColumnsToDisplay() {
-    const { columns = '' } = this.fetchOptions;
+    const { columns } = this.fetchOptions;
 
-    try {
-      const columnsToDisplay = decodeURIComponent(columns).split(',');
-
-      if (!columns || !columnsToDisplay.length) {
-        this.columns = this.buildColumnsMap();
-        return;
-      }
-
-      this.columns = this.buildColumnsMap(false);
-
-      columnsToDisplay.forEach((columnToDisplay) => {
-        this.columns[columnToDisplay] = true;
-      });
-    } catch (err) {
-      console.error('Something went wrong: ', err);
+    if (!columns.length) {
       this.columns = this.buildColumnsMap();
+      return;
     }
+
+    this.columns = this.buildColumnsMap(false);
+
+    columns.forEach((columnToDisplay) => {
+      this.columns[columnToDisplay] = true;
+    });
   }
 }
