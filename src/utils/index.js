@@ -3,7 +3,7 @@ import { MAX_PAGINATION } from './constants';
 
 export default class Utils {
   static getColumnKeys(data) {
-    return Object.keys(data[0]);
+    return Object.keys(data[0] || {});
   }
 
   static getEncodedCSVContent(data) {

@@ -3,7 +3,7 @@
     <div class="header">
       <search-deals />
       <div class="buttons">
-        <columns-filter />
+        <columns-filter :columnsShown="columnsShown" />
         <export-button />
       </div>
     </div>
@@ -21,6 +21,7 @@ import ExportButton from '../components/ExportButton.vue';
 import ColumnsFilter from '../components/ColumnsFilter.vue';
 import Grid from '../components/Grid.vue';
 import Pagination from '../components/Pagination.vue';
+import Utils from '../utils';
 
 export default {
   components: {
@@ -45,6 +46,14 @@ export default {
     this.filteredData = data;
     this.paginationCount = 100;
   },
+  computed: {
+    columnsShown() {
+      return Utils.getColumnKeys(this.filteredData).reduce((result, columnKey) => {
+        result[columnKey] = true;
+        return result;
+      }, {});
+    },
+  },
 };
 </script>
 
@@ -60,6 +69,7 @@ export default {
 }
 
 .buttons {
+  display: flex;
   margin-left: auto;
 }
 </style>
