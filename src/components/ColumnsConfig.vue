@@ -24,10 +24,11 @@
 import BaseButton from './BaseButton.vue';
 
 export default {
-  props: ['columnsShown', 'columnsMap'],
+  props: ['columnsShown'],
   components: {
     BaseButton,
   },
+  inject: ['columnsMap'],
   data() {
     return {
       showConfig: false,

@@ -7,18 +7,12 @@
         </template>
       </search-bar>
       <div class="buttons">
-        <columns-config :columnsShown="columnsShown" :columnsMap="columnsMap" />
-        <export-button :model="deals" fileName="deals_data.csv" />
+        <columns-config :columnsShown="columnsShown" />
+        <export-button fileName="deals_data.csv" />
       </div>
     </div>
     <div>
-      <grid
-        :filteredData="filteredData"
-        dataType="deals"
-        :totalRows="totalRows"
-        :columnsMap="columnsMap"
-        :columnsTypes="columnsTypes"
-      >
+      <grid :filteredData="filteredData">
         <template v-slot:headerMessage>{{ headerMessage }}</template>
       </grid>
     </div>
@@ -45,19 +39,22 @@ export default {
   },
   data() {
     return {
-      deals: new Deals(),
+      model: new Deals(),
       filteredData: [],
       paginationCount: 0,
       totalRows: 0,
     };
   },
-  created() {
-    this.columnsMap = DEALS_COLUMNS_MAP;
-    this.columnsTypes = DEALS_COLUMNS_TYPES;
+  provide() {
+    return {
+      model: this.model,
+      columnsMap: DEALS_COLUMNS_MAP,
+      columnsTypes: DEALS_COLUMNS_TYPES,
+    };
   },
   mounted() {
     const queryParams = this.$route.query;
-    const response = this.deals.getData({ ...queryParams, limit: LIMIT });
+    const response = this.model.getData({ ...queryParams, limit: LIMIT });
     this.updateData(response);
   },
   methods: {
@@ -82,7 +79,7 @@ export default {
     $route(newRoute, oldRoute) {
       if (newRoute.query.offset !== oldRoute.query.offset) {
         const offset = parseInt(newRoute.query.offset) || 1;
-        const newData = this.deals.getData({
+        const newData = this.model.getData({
           offset: LIMIT * (offset - 1),
           limit: LIMIT,
           search: newRoute.query.search,
@@ -92,7 +89,7 @@ export default {
       }
 
       if (newRoute.query.search !== oldRoute.query.search) {
-        const newData = this.deals.getData({
+        const newData = this.model.getData({
           offset: 0,
           limit: LIMIT,
           search: newRoute.query.search,
@@ -103,7 +100,7 @@ export default {
 
       if (newRoute.query.columns !== oldRoute.query.columns) {
         const offset = parseInt(newRoute.query.offset) || 1;
-        const newData = this.deals.getData({
+        const newData = this.model.getData({
           offset: LIMIT * (offset - 1),
           limit: LIMIT,
           search: newRoute.query.search,

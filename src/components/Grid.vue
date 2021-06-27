@@ -3,8 +3,14 @@
     <table>
       <thead>
         <tr>
-          <th v-for="column in columns" :key="column.key">
+          <th class="header" v-for="column in columns" :key="column.key" @click="onHeaderClick(column.key)">
             {{ column.name }}
+            <column-filter
+              v-if="isColumnActive(column.key)"
+              :columnName="column.name"
+              :columnKey="column.key"
+              :onClose="onCloseFilters"
+            />
           </th>
         </tr>
         <tr>
@@ -24,9 +30,19 @@
 
 <script>
 import Utils from '../utils';
+import ColumnFilter from './ColumnFilter.vue';
 
 export default {
-  props: ['filteredData', 'columnsMap', 'columnsTypes'],
+  components: {
+    ColumnFilter,
+  },
+  props: ['filteredData'],
+  inject: ['columnsTypes', 'columnsMap'],
+  data() {
+    return {
+      activeColumnKey: null,
+    };
+  },
   computed: {
     columnKeys() {
       if (this.filteredData.length) {
@@ -42,6 +58,18 @@ export default {
     },
   },
   methods: {
+    onHeaderClick(columnKey) {
+      if (this.isColumnActive(columnKey)) {
+        return;
+      }
+      this.activeColumnKey = columnKey;
+    },
+    onCloseFilters() {
+      this.activeColumnKey = null;
+    },
+    isColumnActive(columnKey) {
+      return this.activeColumnKey === columnKey;
+    },
     processRow(columnKey, row) {
       if (!row) {
         return '(blank)';
@@ -66,11 +94,12 @@ export default {
   justify-content: center;
 }
 
-th {
+.header {
   background-color: #e7ecf0;
   cursor: pointer;
   color: #5c99b7;
   padding: 1rem;
+  position: relative;
 }
 
 .header-message {
@@ -78,6 +107,7 @@ th {
   text-align: left;
   color: black;
   font-weight: 100;
+  padding: 1rem;
 }
 
 .custom-row {

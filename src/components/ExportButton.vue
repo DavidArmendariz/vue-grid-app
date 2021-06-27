@@ -10,7 +10,8 @@ import BaseButton from './BaseButton.vue';
 import Utils from '../utils';
 
 export default {
-  props: ['fileName', 'model'],
+  props: ['fileName'],
+  inject: ['model'],
   components: {
     BaseButton,
   },
