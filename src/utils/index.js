@@ -1,5 +1,5 @@
 import { COLUMNS_MAP } from './mappings';
-import { MAX_PAGINATION } from './constants';
+import { MAX_PAGINATION, LIMIT } from './constants';
 
 export default class Utils {
   static getColumnKeys(data) {
@@ -15,4 +15,4 @@ export default class Utils {
   }
 }
 
-export { COLUMNS_MAP, MAX_PAGINATION };
+export { COLUMNS_MAP, MAX_PAGINATION, LIMIT };

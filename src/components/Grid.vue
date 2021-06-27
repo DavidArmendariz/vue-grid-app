@@ -7,6 +7,9 @@
             {{ columnName }}
           </th>
         </tr>
+        <tr>
+          <th class="header-message" colspan="100%">{{ headerMessage }}</th>
+        </tr>
       </thead>
       <tbody>
         <tr v-for="row in filteredData" :key="row.id">
@@ -23,7 +26,7 @@
 import Utils, { COLUMNS_MAP } from '../utils';
 
 export default {
-  props: ['filteredData'],
+  props: ['filteredData', 'dataType', 'totalRows'],
   computed: {
     columnKeys() {
       if (this.filteredData.length) {
@@ -36,6 +39,9 @@ export default {
         return this.columnKeys.map((key) => COLUMNS_MAP[key]);
       }
       return [];
+    },
+    headerMessage() {
+      return `Showing ${this.totalRows} ${this.dataType}.`;
     },
   },
 };
@@ -51,5 +57,12 @@ th {
   cursor: pointer;
   color: #5c99b7;
   padding: 1rem;
+}
+
+.header-message {
+  background-color: #dddddd;
+  text-align: left;
+  color: black;
+  font-weight: 100;
 }
 </style>

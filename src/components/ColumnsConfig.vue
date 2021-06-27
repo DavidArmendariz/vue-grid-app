@@ -1,5 +1,5 @@
 <template>
-  <div class="columns-filter">
+  <div class="columns-config">
     <base-button @click="onClickConfig">
       <custom-icon icon="cog" />
       Config
@@ -52,7 +52,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.columns-filter {
+.columns-config {
   position: relative;
   display: inline-block;
 }

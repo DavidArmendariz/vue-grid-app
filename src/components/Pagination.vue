@@ -22,15 +22,17 @@ export default {
   props: ['paginationCount'],
   data() {
     return {
-      activePagination: 1,
+      activePagination: parseInt(this.$route.query?.offset) || 1,
     };
   },
   methods: {
     onClickLeftArrow() {
       this.activePagination -= 1;
+      this.addOffsetQueryParam();
     },
     onClickRightArrow() {
       this.activePagination += 1;
+      this.addOffsetQueryParam();
     },
     isActiveClass(n) {
       return n === this.activePagination ? 'active' : '';
@@ -40,24 +42,27 @@ export default {
         return;
       }
       this.activePagination = n;
+      this.addOffsetQueryParam();
+    },
+    addOffsetQueryParam() {
+      this.$router.push({ query: { offset: this.activePagination } });
+    },
+  },
+  watch: {
+    $route(newRoute) {
+      this.activePagination = parseInt(newRoute.query?.offset) || 1;
     },
   },
   computed: {
     shouldShowLeftArrow() {
-      if (this.paginationCount <= MAX_PAGINATION) {
-        return false;
-      }
       return this.activePagination > 1;
     },
     shouldShowRightArrow() {
-      if (this.paginationCount <= MAX_PAGINATION) {
-        return false;
-      }
       return this.activePagination < this.paginationCount;
     },
     getPaginationNumbers() {
       if (this.paginationCount <= MAX_PAGINATION) {
-        return Array.from(Array(MAX_PAGINATION), (_, index) => index + 1);
+        return Array.from(Array(this.paginationCount), (_, index) => index + 1);
       }
       let i = 1;
       const leftNumbers = [];
