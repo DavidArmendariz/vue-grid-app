@@ -1,15 +1,127 @@
 <template>
-  <div>
-    Documents
+  <div class="documents">
+    <div class="header">
+      <search-bar>
+        <template v-slot:title>
+          <h2>Search Documents</h2>
+        </template>
+      </search-bar>
+      <div class="buttons">
+        <columns-config :columnsShown="columnsShown" />
+        <export-button fileName="documents_data.csv" />
+      </div>
+    </div>
+    <div>
+      <grid :filteredData="filteredData">
+        <template v-slot:headerMessage>{{ headerMessage }}</template>
+      </grid>
+    </div>
+    <pagination :paginationCount="paginationCount" />
   </div>
 </template>
 
 <script>
 import Documents from '../models/documents';
+import SearchBar from '../components/SearchBar.vue';
+import ExportButton from '../components/ExportButton.vue';
+import ColumnsConfig from '../components/ColumnsConfig.vue';
+import Grid from '../components/Grid.vue';
+import Pagination from '../components/Pagination.vue';
+import Utils, { LIMIT, DOCS_COLUMNS_MAP, DOCS_COLUMNS_TYPES } from '../utils';
 
 export default {
-  provide: {
-    deals: new Documents(),
+  components: {
+    SearchBar,
+    ExportButton,
+    ColumnsConfig,
+    Grid,
+    Pagination,
+  },
+  data() {
+    return {
+      model: new Documents(),
+      filteredData: [],
+      paginationCount: 0,
+      totalRows: 0,
+    };
+  },
+  provide() {
+    return {
+      model: this.model,
+      columnsMap: DOCS_COLUMNS_MAP,
+      columnsTypes: DOCS_COLUMNS_TYPES,
+    };
+  },
+  mounted() {
+    const response = this.model.getData(this.$route.query);
+    this.updateData(response);
+  },
+  methods: {
+    updateData({ data, paginationCount, total }) {
+      this.filteredData = data;
+      this.paginationCount = paginationCount;
+      this.totalRows = total;
+    },
+  },
+  computed: {
+    columnsShown() {
+      return Utils.getColumnKeys(this.filteredData).reduce((result, columnKey) => {
+        result[columnKey] = true;
+        return result;
+      }, {});
+    },
+    headerMessage() {
+      return `Showing ${this.totalRows} documents.`;
+    },
+  },
+  watch: {
+    $route(newRoute, oldRoute) {
+      if (newRoute.query.offset !== oldRoute.query.offset) {
+        const offset = parseInt(newRoute.query.offset) || 1;
+        const newData = this.model.getData({
+          offset: LIMIT * (offset - 1),
+          search: newRoute.query.search,
+          columns: newRoute.query.columns || '',
+        });
+        this.updateData(newData);
+      }
+
+      if (newRoute.query.search !== oldRoute.query.search) {
+        const newData = this.model.getData({
+          offset: 0,
+          search: newRoute.query.search,
+          columns: newRoute.query.columns || '',
+        });
+        this.updateData(newData);
+      }
+
+      if (newRoute.query.columns !== oldRoute.query.columns) {
+        const offset = parseInt(newRoute.query.offset) || 1;
+        const newData = this.model.getData({
+          offset: LIMIT * (offset - 1),
+          search: newRoute.query.search,
+          columns: newRoute.query.columns || '',
+        });
+        this.updateData(newData);
+      }
+    },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.documents {
+  padding: 1rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.buttons {
+  display: flex;
+  margin-left: auto;
+}
+</style>

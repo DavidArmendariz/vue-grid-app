@@ -1,6 +1,9 @@
 <template>
   <div class="grid">
-    <table>
+    <div v-if="showEmptyMessage">
+      No data to display
+    </div>
+    <table v-else>
       <thead>
         <tr>
           <th class="header" v-for="column in columns" :key="column.key" @click="onHeaderClick(column.key)">
@@ -55,6 +58,9 @@ export default {
         return this.columnKeys.map((key) => ({ key, name: this.columnsMap[key] }));
       }
       return [];
+    },
+    showEmptyMessage() {
+      return this.filteredData.length === 0;
     },
   },
   methods: {
