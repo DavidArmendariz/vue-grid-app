@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     exportDealsData() {
-      const { data } = this.model.getData();
+      const { data } = this.model.getData({ all: true });
       const encodedData = Utils.getEncodedCSVContent(data);
       const link = document.createElement('a');
       link.setAttribute('href', encodedData);

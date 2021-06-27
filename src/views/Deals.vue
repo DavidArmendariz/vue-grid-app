@@ -53,8 +53,7 @@ export default {
     };
   },
   mounted() {
-    const queryParams = this.$route.query;
-    const response = this.model.getData({ ...queryParams, limit: LIMIT });
+    const response = this.model.getData(this.$route.query);
     this.updateData(response);
   },
   methods: {
@@ -81,7 +80,6 @@ export default {
         const offset = parseInt(newRoute.query.offset) || 1;
         const newData = this.model.getData({
           offset: LIMIT * (offset - 1),
-          limit: LIMIT,
           search: newRoute.query.search,
           columns: newRoute.query.columns || '',
         });
@@ -91,7 +89,6 @@ export default {
       if (newRoute.query.search !== oldRoute.query.search) {
         const newData = this.model.getData({
           offset: 0,
-          limit: LIMIT,
           search: newRoute.query.search,
           columns: newRoute.query.columns || '',
         });
@@ -102,7 +99,6 @@ export default {
         const offset = parseInt(newRoute.query.offset) || 1;
         const newData = this.model.getData({
           offset: LIMIT * (offset - 1),
-          limit: LIMIT,
           search: newRoute.query.search,
           columns: newRoute.query.columns || '',
         });

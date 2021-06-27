@@ -16,7 +16,7 @@ export default class BaseModel {
   }
 
   setFetchOptions(options) {
-    const { offset, columns, search } = options;
+    const { offset, columns, search, all = false } = options;
 
     let processedOffset = 0;
     let processedColumns = [];
@@ -38,6 +38,7 @@ export default class BaseModel {
       offset: processedOffset,
       columns: processedColumns,
       search: processedSearch,
+      all,
     };
 
     this.fetchOptions = fetchOptions;
@@ -62,8 +63,8 @@ export default class BaseModel {
   }
 
   limitData(data) {
-    const { offset } = this.fetchOptions;
-    return data.slice(offset, offset + this.limit);
+    const { offset, all } = this.fetchOptions;
+    return all ? data : data.slice(offset, offset + this.limit);
   }
 
   filterRowsBySearchString(data) {
