@@ -18,3 +18,14 @@ export function getColumnsShown() {
     return result;
   }, {});
 }
+
+export function getCurrentSort() {
+  const existingQueryParams = this.$route.query;
+  let existingSort;
+  try {
+    existingSort = JSON.parse(decodeURIComponent(existingQueryParams.sort));
+  } catch {
+    existingSort = [];
+  }
+  return existingSort.filter((sortEntry) => sortEntry.key !== this.columnKey);
+}
