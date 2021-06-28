@@ -15,7 +15,7 @@ export default class BaseModel {
     }, {});
   }
 
-  setFetchOptions(options) {
+  setFetchOptions(options = {}) {
     const { offset, columns, search, sort, uniqueValues, all } = options;
 
     let processedOffset = 0;
