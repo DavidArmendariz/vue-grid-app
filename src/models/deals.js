@@ -51,6 +51,7 @@ export default class Deals extends BaseModel {
     let deals = this.reduceDealsData();
     deals = this.filterRowsBySearchString(deals);
     deals = this.sortData(deals);
+    deals = this.filterByUniqueValues(deals);
 
     return {
       data: this.limitData(deals),

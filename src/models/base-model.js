@@ -16,12 +16,13 @@ export default class BaseModel {
   }
 
   setFetchOptions(options) {
-    const { offset, columns, search, sort, all = false } = options;
+    const { offset, columns, search, sort, uniqueValues, all = false } = options;
 
     let processedOffset = 0;
     let processedColumns = [];
     let processedSearch = '';
     let processedSort = [];
+    let processedUniqueValues = {};
 
     if (offset) {
       processedOffset = parseInt(offset);
@@ -47,11 +48,16 @@ export default class BaseModel {
       }
     }
 
+    if (uniqueValues) {
+      processedUniqueValues = JSON.parse(decodeURIComponent(uniqueValues));
+    }
+
     const fetchOptions = {
       offset: processedOffset,
       columns: processedColumns,
       search: processedSearch,
       sort: processedSort,
+      uniqueValues: processedUniqueValues,
       all,
     };
 
@@ -160,6 +166,25 @@ export default class BaseModel {
         }
       });
       return result;
+    });
+  }
+
+  filterByUniqueValues(data) {
+    const { uniqueValues } = this.fetchOptions;
+
+    if (!Object.keys(uniqueValues).length) {
+      return data;
+    }
+
+    const { key, values } = uniqueValues;
+
+    const valuesMap = values.reduce((result, currentValue) => {
+      result[currentValue] = true;
+      return result;
+    }, {});
+
+    return data.filter((row) => {
+      return row[key] in valuesMap;
     });
   }
 }

@@ -8,7 +8,14 @@
     <div class="filters-options">
       <div class="filter-values">Filter {{ columnName }}</div>
       <div class="option" v-for="entry in uniqueValues" :key="entry.id">
-        <input type="checkbox" :name="entry.value" :id="entry.id" :value="entry.value" v-model="entry.checked" />
+        <input
+          type="checkbox"
+          :name="entry.value"
+          :id="entry.id"
+          :value="entry.value"
+          v-model="entry.checked"
+          @change="onChange"
+        />
         <label :for="entry.id">{{ entry.name }}</label>
       </div>
     </div>
@@ -63,6 +70,12 @@ export default {
       const currentSort = Utils.getCurrentSort.bind(this)();
       this.$router.push({ query: { ...this.$route.query, sort: encodeURIComponent(JSON.stringify(currentSort)) } });
       this.onClose();
+    },
+    onChange() {
+      const checkedValues = this.uniqueValues.filter((entry) => entry.checked).map((entry) => entry.value || null);
+      const data = { key: this.columnKey, values: checkedValues };
+      const encodedData = encodeURIComponent(JSON.stringify(data));
+      this.$router.push({ query: { ...this.$route.query, uniqueValues: encodedData } });
     },
   },
 };

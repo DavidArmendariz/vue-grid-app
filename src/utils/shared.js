@@ -1,45 +1,26 @@
 import { LIMIT } from './constants';
 
 export function handleRouteChange(newRoute, oldRoute) {
-  if (newRoute.query.offset !== oldRoute.query.offset) {
+  const offsetChanged = newRoute.query.offset !== oldRoute.query.offset;
+  const searchChanged = newRoute.query.search !== oldRoute.query.search;
+  const columnsChanged = newRoute.query.columns !== oldRoute.query.columns;
+  const sortChanged = newRoute.query.sort !== oldRoute.query.sort;
+  const uniqueValuesChanged = newRoute.query.uniqueValues !== oldRoute.query.uniqueValues;
+
+  if (offsetChanged || columnsChanged || sortChanged || uniqueValuesChanged) {
     const offset = parseInt(newRoute.query.offset) || 1;
     const newData = this.model.getData({
+      ...newRoute.query,
       offset: LIMIT * (offset - 1),
-      search: newRoute.query.search,
-      columns: newRoute.query.columns,
-      sort: newRoute.query.sort,
     });
     this.updateData(newData);
+    return;
   }
 
-  if (newRoute.query.search !== oldRoute.query.search) {
+  if (searchChanged) {
     const newData = this.model.getData({
+      ...newRoute.query,
       offset: 0,
-      search: newRoute.query.search,
-      columns: newRoute.query.columns,
-      sort: newRoute.query.sort,
-    });
-    this.updateData(newData);
-  }
-
-  if (newRoute.query.columns !== oldRoute.query.columns) {
-    const offset = parseInt(newRoute.query.offset) || 1;
-    const newData = this.model.getData({
-      offset: LIMIT * (offset - 1),
-      search: newRoute.query.search,
-      columns: newRoute.query.columns,
-      sort: newRoute.query.sort,
-    });
-    this.updateData(newData);
-  }
-
-  if (newRoute.query.sort !== oldRoute.query.sort) {
-    const offset = parseInt(newRoute.query.offset) || 1;
-    const newData = this.model.getData({
-      offset: LIMIT * (offset - 1),
-      search: newRoute.query.search,
-      columns: newRoute.query.columns,
-      sort: newRoute.query.sort,
     });
     this.updateData(newData);
   }

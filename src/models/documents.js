@@ -33,6 +33,8 @@ export default class Documents extends BaseModel {
 
     let documents = this.reduceDocumentsData();
     documents = this.filterRowsBySearchString(documents);
+    documents = this.sortData(documents);
+    documents = this.filterByUniqueValues(documents);
 
     return {
       data: this.limitData(documents),

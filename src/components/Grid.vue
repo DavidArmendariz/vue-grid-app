@@ -14,6 +14,7 @@
               :columnName="column.name"
               :columnKey="column.key"
               :onClose="onCloseFilters"
+              :filteredData="filteredData"
             />
           </th>
         </tr>
