@@ -11,6 +11,7 @@
         <export-button fileName="deals_data.csv" />
       </div>
     </div>
+    <pagination :paginationCount="paginationCount" />
     <div>
       <grid :filteredData="filteredData">
         <template v-slot:headerMessage>{{ headerMessage }}</template>
