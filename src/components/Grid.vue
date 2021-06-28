@@ -82,7 +82,7 @@ export default {
       }
       switch (this.columnsTypes[columnKey]) {
         case Array:
-          return row.join(', ');
+          return row.join(', ') || '(blank)';
         case Date:
           return new Date(Date.parse(row)).toLocaleString();
         default:
