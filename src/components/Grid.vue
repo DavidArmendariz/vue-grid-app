@@ -23,7 +23,9 @@
       <tbody>
         <tr class="custom-row" v-for="row in filteredData" :key="row.id">
           <td v-for="columnKey in columnKeys" :key="`${row.id}-${columnKey}`">
-            {{ processRow(columnKey, row[columnKey]) }}
+            <div class="cell">
+              {{ processRow(columnKey, row[columnKey]) }}
+            </div>
           </td>
         </tr>
       </tbody>
@@ -76,18 +78,31 @@ export default {
     isColumnActive(columnKey) {
       return this.activeColumnKey === columnKey;
     },
-    processRow(columnKey, row) {
+    processRow(columnKey, row, ellipsis = true) {
       if (!row) {
         return '(blank)';
       }
+
+      let rowContent;
+
       switch (this.columnsTypes[columnKey]) {
         case Array:
-          return row.join(', ') || '(blank)';
+          rowContent = row.join(', ') || '(blank)';
+          break;
         case Date:
-          return new Date(Date.parse(row)).toLocaleString();
+          rowContent = new Date(Date.parse(row)).toLocaleString();
+          break;
+        case Number:
+          rowContent = row.toString();
+          break;
         default:
-          return row;
+          rowContent = row;
       }
+
+      if (rowContent.length > 20 && ellipsis) {
+        rowContent = (rowContent + '').slice(0, 20) + '...';
+      }
+      return rowContent;
     },
   },
 };
