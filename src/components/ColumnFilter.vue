@@ -48,7 +48,7 @@ export default {
   },
   methods: {
     getUniqueValues() {
-      const uniqueValues = this.model.getUniqueValuesForColumn(this.columnKey);
+      const uniqueValues = this.model.getUniqueValuesForColumn(this.columnKey, { all: 'true' });
       return uniqueValues.reduce((result, currentValue, currentIndex) => {
         const entry = {
           id: `${this.columnKey}-${currentIndex}`,

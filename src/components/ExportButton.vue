@@ -1,5 +1,5 @@
 <template>
-  <base-button @click="exportDealsData">
+  <base-button @click="exportData">
     <custom-icon icon="file-export" />
     Export
   </base-button>
@@ -16,8 +16,8 @@ export default {
     BaseButton,
   },
   methods: {
-    exportDealsData() {
-      const { data } = this.model.getData({ all: true });
+    exportData() {
+      const { data } = this.model.getData({ ...this.$route.query, all: 'true' });
       const encodedData = Utils.getCSVContent(data);
       const blob = new Blob([encodedData], { type: 'text/csv' });
       const link = document.createElement('a');

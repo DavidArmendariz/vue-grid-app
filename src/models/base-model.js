@@ -16,7 +16,7 @@ export default class BaseModel {
   }
 
   setFetchOptions(options) {
-    const { offset, columns, search, sort, uniqueValues, all = false } = options;
+    const { offset, columns, search, sort, uniqueValues, all } = options;
 
     let processedOffset = 0;
     let processedColumns = [];
@@ -74,7 +74,7 @@ export default class BaseModel {
   }
 
   getUniqueValuesForColumn(columnKey) {
-    const { data } = this.getData({ all: true });
+    const { data } = this.getData({ all: 'true' });
     return [...new Set(data.map((row) => row[columnKey]))];
   }
 
@@ -84,7 +84,7 @@ export default class BaseModel {
 
   limitData(data) {
     const { offset, all } = this.fetchOptions;
-    return all ? data : data.slice(offset, offset + this.limit);
+    return all === 'true' ? data : data.slice(offset, offset + this.limit);
   }
 
   filterRowsBySearchString(data) {
