@@ -6,6 +6,7 @@
     <table v-else>
       <thead>
         <tr>
+          <th class="header"></th>
           <th class="header" v-for="column in columns" :key="column.key" @click="onHeaderClick(column.key)">
             {{ column.name }}
             <column-filter
@@ -22,6 +23,9 @@
       </thead>
       <tbody>
         <tr class="custom-row" v-for="row in filteredData" :key="row.id">
+          <td>
+            <input type="checkbox" name="" id="" />
+          </td>
           <td v-for="columnKey in columnKeys" :key="`${row.id}-${columnKey}`">
             <div class="cell">
               {{ processRow(columnKey, row[columnKey]) }}
@@ -145,5 +149,7 @@ table {
 .cell {
   height: 50px;
   padding: 10px;
+  display: flex;
+  align-items: center;
 }
 </style>
