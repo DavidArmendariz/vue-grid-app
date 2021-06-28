@@ -1,4 +1,4 @@
-import Utils from '../utils';
+import * as Utils from '../utils';
 
 export default class BaseModel {
   constructor(limit, columnsTypes) {
@@ -121,6 +121,25 @@ export default class BaseModel {
 
     columns.forEach((columnToDisplay) => {
       this.columns[columnToDisplay] = true;
+    });
+  }
+
+  sortData(data, columns) {
+    return data.sort((a, b) => {
+      let result;
+      columns.forEach((column) => {
+        const { key, order } = column;
+        let multiplier = order.toLowerCase() === 'asc' ? 1 : -1;
+
+        if (this.columnsTypes[key] === String) {
+          result = result || a[key].localeCompare(b[key]) * multiplier;
+        }
+
+        if (this.columnsTypes[key] === Number) {
+          result = result || (a - b) * multiplier;
+        }
+      });
+      return result;
     });
   }
 }

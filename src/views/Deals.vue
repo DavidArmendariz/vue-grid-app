@@ -27,7 +27,7 @@ import ExportButton from '../components/ExportButton.vue';
 import ColumnsConfig from '../components/ColumnsConfig.vue';
 import Grid from '../components/Grid.vue';
 import Pagination from '../components/Pagination.vue';
-import Utils, { LIMIT, DEALS_COLUMNS_MAP, DEALS_COLUMNS_TYPES } from '../utils';
+import * as Utils from '../utils';
 
 export default {
   components: {
@@ -48,8 +48,8 @@ export default {
   provide() {
     return {
       model: this.model,
-      columnsMap: DEALS_COLUMNS_MAP,
-      columnsTypes: DEALS_COLUMNS_TYPES,
+      columnsMap: Utils.DEALS_COLUMNS_MAP,
+      columnsTypes: Utils.DEALS_COLUMNS_TYPES,
     };
   },
   mounted() {
@@ -65,10 +65,7 @@ export default {
   },
   computed: {
     columnsShown() {
-      return Utils.getColumnKeys(this.filteredData).reduce((result, columnKey) => {
-        result[columnKey] = true;
-        return result;
-      }, {});
+      return Utils.getColumnsShown.bind(this)();
     },
     headerMessage() {
       return `Showing ${this.totalRows} deals.`;
@@ -76,34 +73,7 @@ export default {
   },
   watch: {
     $route(newRoute, oldRoute) {
-      if (newRoute.query.offset !== oldRoute.query.offset) {
-        const offset = parseInt(newRoute.query.offset) || 1;
-        const newData = this.model.getData({
-          offset: LIMIT * (offset - 1),
-          search: newRoute.query.search,
-          columns: newRoute.query.columns || '',
-        });
-        this.updateData(newData);
-      }
-
-      if (newRoute.query.search !== oldRoute.query.search) {
-        const newData = this.model.getData({
-          offset: 0,
-          search: newRoute.query.search,
-          columns: newRoute.query.columns || '',
-        });
-        this.updateData(newData);
-      }
-
-      if (newRoute.query.columns !== oldRoute.query.columns) {
-        const offset = parseInt(newRoute.query.offset) || 1;
-        const newData = this.model.getData({
-          offset: LIMIT * (offset - 1),
-          search: newRoute.query.search,
-          columns: newRoute.query.columns || '',
-        });
-        this.updateData(newData);
-      }
+      Utils.handleRouteChange.bind(this)(newRoute, oldRoute);
     },
   },
 };

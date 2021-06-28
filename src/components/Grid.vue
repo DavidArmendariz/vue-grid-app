@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import Utils from '../utils';
+import * as Utils from '../utils';
 import ColumnFilter from './ColumnFilter.vue';
 
 export default {

@@ -2,8 +2,8 @@
   <div class="column-filter">
     <div class="column-name">{{ columnName }}</div>
     <div v-if="isColumnAlphabeticallySortable" class="alphabetical-sorting">
-      <div>Sort A to Z</div>
-      <div>Sort Z to A</div>
+      <div @click="onSortAlphabetically('asc')">Sort A to Z</div>
+      <div @click="onSortAlphabetically('desc')">Sort Z to A</div>
     </div>
     <div class="buttons">
       <base-button>Clear Filter</base-button>
@@ -24,6 +24,13 @@ export default {
   computed: {
     isColumnAlphabeticallySortable() {
       return this.columnsTypes[this.columnKey] === String;
+    },
+  },
+  methods: {
+    onSortAlphabetically(order) {
+      const existingQueryParams = this.$route.query;
+      const currentSort = (existingQueryParams.sort || []).filter((sortEntry) => sortEntry.key !== this.columnKey);
+      this.$router.push({ query: { ...existingQueryParams, sort: [...currentSort, { key: this.columnKey, order }] } });
     },
   },
 };

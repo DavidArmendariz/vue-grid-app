@@ -7,7 +7,7 @@
 
 <script>
 import BaseButton from './BaseButton.vue';
-import Utils from '../utils';
+import * as Utils from '../utils';
 
 export default {
   props: ['fileName'],
