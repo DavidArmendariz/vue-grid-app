@@ -29,8 +29,16 @@ export default {
   methods: {
     onSortAlphabetically(order) {
       const existingQueryParams = this.$route.query;
-      const currentSort = (existingQueryParams.sort || []).filter((sortEntry) => sortEntry.key !== this.columnKey);
-      this.$router.push({ query: { ...existingQueryParams, sort: [...currentSort, { key: this.columnKey, order }] } });
+      let existingSort;
+      try {
+        existingSort = JSON.parse(decodeURIComponent(existingQueryParams.sort));
+      } catch {
+        existingSort = [];
+      }
+      const currentSort = existingSort.filter((sortEntry) => sortEntry.key !== this.columnKey);
+      const sort = encodeURIComponent(JSON.stringify([...currentSort, { key: this.columnKey, order }]));
+      this.onClose();
+      this.$router.push({ query: { ...existingQueryParams, sort } });
     },
   },
 };

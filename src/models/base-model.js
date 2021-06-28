@@ -16,28 +16,42 @@ export default class BaseModel {
   }
 
   setFetchOptions(options) {
-    const { offset, columns, search, all = false } = options;
+    const { offset, columns, search, sort, all = false } = options;
 
     let processedOffset = 0;
     let processedColumns = [];
     let processedSearch = '';
+    let processedSort = [];
 
     if (offset) {
       processedOffset = parseInt(offset);
     }
 
     if (columns) {
-      processedColumns = decodeURIComponent(columns).split(',');
+      try {
+        processedColumns = JSON.parse(decodeURIComponent(columns));
+      } catch (err) {
+        console.error('Something went wrong when parsing columns fetch option: ', err);
+      }
     }
 
     if (search) {
       processedSearch = decodeURIComponent(search);
     }
 
+    if (sort) {
+      try {
+        processedSort = JSON.parse(decodeURIComponent(sort));
+      } catch (err) {
+        console.error('Something went wrong when parsing columns fetch option:', err);
+      }
+    }
+
     const fetchOptions = {
       offset: processedOffset,
       columns: processedColumns,
       search: processedSearch,
+      sort: processedSort,
       all,
     };
 
@@ -124,15 +138,21 @@ export default class BaseModel {
     });
   }
 
-  sortData(data, columns) {
+  sortData(data) {
+    const { sort } = this.fetchOptions;
+
+    if (!sort.length) {
+      return data;
+    }
+
     return data.sort((a, b) => {
       let result;
-      columns.forEach((column) => {
+      sort.forEach((column) => {
         const { key, order } = column;
         let multiplier = order.toLowerCase() === 'asc' ? 1 : -1;
 
         if (this.columnsTypes[key] === String) {
-          result = result || a[key].localeCompare(b[key]) * multiplier;
+          result = result || (a[key] || '').localeCompare(b[key] || '') * multiplier;
         }
 
         if (this.columnsTypes[key] === Number) {

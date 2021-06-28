@@ -63,7 +63,9 @@ export default {
       const filteredColumns = this.columnsInfo.filter((column) => column.checked).map((column) => column.key);
       this.showConfig = false;
       const existingQueryParams = this.$route.query;
-      this.$router.push({ query: { ...existingQueryParams, columns: encodeURIComponent(filteredColumns) } });
+      this.$router.push({
+        query: { ...existingQueryParams, columns: encodeURIComponent(JSON.stringify(filteredColumns)) },
+      });
     },
   },
 };
