@@ -139,5 +139,11 @@ export default {
 
 table {
   border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.cell {
+  height: 50px;
+  padding: 10px;
 }
 </style>
