@@ -8,7 +8,7 @@
       <div class="filters-options">
         <div class="option" v-for="column in columnsInfo" :key="column.key">
           <input type="checkbox" :name="column.name" :id="column.key" :value="column.key" v-model="column.checked" />
-          <label for="column.name">{{ column.name }}</label>
+          <label :for="column.key">{{ column.name }}</label>
         </div>
       </div>
       <div class="filters-buttons">

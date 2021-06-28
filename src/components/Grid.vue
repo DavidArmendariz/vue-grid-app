@@ -68,7 +68,7 @@ export default {
   methods: {
     onHeaderClick(columnKey) {
       if (this.isColumnActive(columnKey)) {
-        return;
+        this.onCloseFilters();
       }
       this.activeColumnKey = columnKey;
     },

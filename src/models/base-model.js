@@ -68,8 +68,8 @@ export default class BaseModel {
   }
 
   getUniqueValuesForColumn(columnKey) {
-    const allData = this.getData();
-    return [...new Set(allData.map((row) => row[columnKey]))];
+    const { data } = this.getData({ all: true });
+    return [...new Set(data.map((row) => row[columnKey]))];
   }
 
   getMainTableData() {
