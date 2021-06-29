@@ -19,6 +19,12 @@ export default class Deals extends BaseModel {
   reduceDealsData() {
     const fetchedData = this.getMainTableData();
     return fetchedData.reduce((processedData, row) => {
+      let shouldIncludeDealId = true;
+
+      if (this.fetchOptions.isExport) {
+        shouldIncludeDealId = this.columns.dealId;
+      }
+
       const processedRow = {
         ...(this.columns.id && { id: row.Id }),
         ...(this.columns.issuer && { issuer: this.clientIssuers[row.IssuerId]?.IssuerName?.trim() }),
@@ -37,7 +43,7 @@ export default class Deals extends BaseModel {
         ...(this.columns.analysts && { analysts: this.getAnalystsFromIds(row.AnalystIds) }),
         ...(this.columns.docCount && { docCount: row.DocCount }),
         ...(this.columns.customField && { customField: row.ClientCustomField }),
-        dealId: row.DealId, // dealId should always be sent
+        ...(shouldIncludeDealId && { dealId: row.DealId }),
       };
       processedData.push(processedRow);
       return processedData;

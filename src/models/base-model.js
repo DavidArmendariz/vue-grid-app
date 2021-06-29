@@ -16,7 +16,7 @@ export default class BaseModel {
   }
 
   setFetchOptions(options = {}) {
-    const { offset, columns, search, sort, uniqueValues, all } = options;
+    const { offset, columns, search, sort, uniqueValues, all, isExport } = options;
 
     let processedOffset = 0;
     let processedColumns = [];
@@ -58,7 +58,8 @@ export default class BaseModel {
       search: processedSearch,
       sort: processedSort,
       uniqueValues: processedUniqueValues,
-      all,
+      all: all === 'true',
+      isExport: isExport === 'true',
     };
 
     this.fetchOptions = fetchOptions;
@@ -84,7 +85,7 @@ export default class BaseModel {
 
   limitData(data) {
     const { offset, all } = this.fetchOptions;
-    return all === 'true' ? data : data.slice(offset, offset + this.limit);
+    return all ? data : data.slice(offset, offset + this.limit);
   }
 
   filterRowsBySearchString(data) {

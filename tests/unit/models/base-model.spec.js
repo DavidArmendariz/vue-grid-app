@@ -38,7 +38,8 @@ describe('BaseModel', () => {
         search: '',
         sort: [],
         uniqueValues: {},
-        all: undefined,
+        all: false,
+        isExport: false,
       });
     });
 

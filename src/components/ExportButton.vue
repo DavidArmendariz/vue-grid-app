@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     exportData() {
-      const { data } = this.model.getData({ ...this.$route.query, all: 'true' });
+      const { data } = this.model.getData({ ...this.$route.query, all: 'true', isExport: 'true' });
       const encodedData = Utils.getCSVContent(data);
       const blob = new Blob([encodedData], { type: 'text/csv' });
       const link = document.createElement('a');
