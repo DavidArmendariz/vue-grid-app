@@ -50,7 +50,7 @@ export default class BaseModel {
     }, {});
   }
 
-  getUniqueValuesForColumn(columnKey, filters = {}) {
+  getUniqueValuesForColumn(columnKey, filters) {
     const { data } = this.getData(filters);
     return [...new Set(data.map((row) => row[columnKey]))];
   }

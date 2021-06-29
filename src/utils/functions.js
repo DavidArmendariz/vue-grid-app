@@ -103,8 +103,11 @@ export function processRow(columnKey, row, ellipsis = false) {
 }
 
 export function getUniqueValues() {
-  const uniqueValues = this.model.getUniqueValuesForColumn(this.columnKey, { all: 'true' });
+  const existingFilters = getItemFromLocalStorage('filters', {});
+  const filters = JSON.stringify({ ...existingFilters, all: true });
+  const uniqueValues = this.model.getUniqueValuesForColumn(this.columnKey, filters);
   const columnsTypes = this.columnsTypes;
+
   return uniqueValues.reduce((result, currentValue) => {
     let name = currentValue || '(blank)';
 

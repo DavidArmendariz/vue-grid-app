@@ -7,7 +7,7 @@
     </div>
     <input class="filter-search-bar" type="text" :placeholder="placeholder" v-model="searchFilter" />
     <div class="filters-options">
-      <div v-for="entry in uniqueValues" :key="entry.name">
+      <div v-for="entry in uniqueValuesToRender" :key="entry.name">
         <input
           type="checkbox"
           :name="entry.name"
@@ -52,10 +52,17 @@ export default {
     placeholder() {
       return `Filter ${this.columnName}`;
     },
-  },
-  watch: {
-    searchFilter() {
-      this.uniqueValues = this.uniqueValues.filter((value) => value.includes(this.searchFilter));
+    uniqueValuesToRender() {
+      return this.uniqueValues.filter((value) => {
+        const name = value.name.toLowerCase();
+        const searchFilter = this.searchFilter;
+
+        if (searchFilter) {
+          return name.includes(searchFilter);
+        }
+
+        return true;
+      });
     },
   },
   methods: {
