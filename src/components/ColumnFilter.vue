@@ -6,17 +6,17 @@
       <div @click="onSortAlphabetically('desc')">Sort Z to A</div>
     </div>
     <div class="filters-options">
-      <div class="filter-values">Filter {{ columnName }}</div>
-      <div class="option" v-for="entry in uniqueValues" :key="entry.id">
+      <input class="filter-search-bar" type="text" :placeholder="placeholder" v-model="searchFilter" />
+      <div v-for="entry in uniqueValues" :key="entry.name">
         <input
           type="checkbox"
-          :name="entry.value"
-          :id="entry.id"
+          :name="entry.name"
+          :id="entry.name"
           :value="entry.value"
           v-model="entry.checked"
           @change="onChange"
         />
-        <label :for="entry.id">{{ entry.name }}</label>
+        <label :for="entry.name">{{ entry.name }}</label>
       </div>
     </div>
     <div class="buttons">
@@ -39,22 +39,30 @@ export default {
   data() {
     return {
       uniqueValues: this.getUniqueValues(),
+      searchFilter: '',
     };
   },
   computed: {
     isColumnAlphabeticallySortable() {
       return this.columnsTypes[this.columnKey] === String;
     },
+    placeholder() {
+      return `Filter ${this.columnName}`;
+    },
+  },
+  watch: {
+    searchFilter() {
+      this.uniqueValues = this.uniqueValues.filter((value) => value.includes(this.searchFilter));
+    },
   },
   methods: {
     getUniqueValues() {
-      const uniqueValues = this.model.getUniqueValuesForColumn(this.columnKey, { all: 'true' });
-      return uniqueValues.reduce((result, currentValue, currentIndex) => {
+      const uniqueValues = this.model.getUniqueValuesForColumn(this.columnKey, { ...this.$route.query, all: 'true' });
+      return uniqueValues.reduce((result, currentValue) => {
         const entry = {
-          id: `${this.columnKey}-${currentIndex}`,
           value: currentValue,
           name: currentValue || '(blank)',
-          checked: false,
+          checked: true,
         };
         result.push(entry);
         return result;
@@ -113,12 +121,10 @@ export default {
 .filters-options {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: flex-start;
 }
 
-.filter-values {
-  color: black;
+.filter-search-bar {
   margin: 1rem 0;
 }
 </style>

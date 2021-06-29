@@ -37,7 +37,7 @@ describe('BaseModel', () => {
         columns: [],
         search: '',
         sort: [],
-        uniqueValues: {},
+        uniqueValues: [],
         all: false,
         isExport: false,
       });
@@ -260,12 +260,12 @@ describe('BaseModel', () => {
       expect(baseModel.filterByUniqueValues(data)).toEqual(data);
     });
 
-    it('should return data if unique values is not defined', () => {
+    it.only('should return data if unique values is not defined', () => {
       const data = [
         { id: 1, firstName: 'david' },
         { id: 2, firstName: 'andres' },
       ];
-      const uniqueValues = encodeURIComponent(JSON.stringify({ key: 'firstName', values: ['david'] }));
+      const uniqueValues = encodeURIComponent(JSON.stringify([{ key: 'firstName', values: ['david'] }]));
       baseModel.setFetchOptions({ uniqueValues });
       expect(baseModel.filterByUniqueValues(data)).toEqual([{ id: 1, firstName: 'david' }]);
     });

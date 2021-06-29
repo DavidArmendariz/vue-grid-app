@@ -78,10 +78,12 @@ export default {
         name: 'Documents',
         query: {
           uniqueValues: encodeURIComponent(
-            JSON.stringify({
-              key: 'dealId',
-              values: [row.dealId],
-            })
+            JSON.stringify([
+              {
+                key: 'dealId',
+                values: [row.dealId],
+              },
+            ])
           ),
         },
       };

@@ -22,7 +22,7 @@ export default class BaseModel {
     let processedColumns = [];
     let processedSearch = '';
     let processedSort = [];
-    let processedUniqueValues = {};
+    let processedUniqueValues = [];
 
     if (offset) {
       processedOffset = parseInt(offset);
@@ -74,8 +74,8 @@ export default class BaseModel {
     }, {});
   }
 
-  getUniqueValuesForColumn(columnKey) {
-    const { data } = this.getData({ all: 'true' });
+  getUniqueValuesForColumn(columnKey, filters = {}) {
+    const { data } = this.getData(filters);
     return [...new Set(data.map((row) => row[columnKey]))];
   }
 
@@ -182,19 +182,27 @@ export default class BaseModel {
   filterByUniqueValues(data) {
     const { uniqueValues } = this.fetchOptions;
 
-    if (!Object.keys(uniqueValues).length) {
+    if (!uniqueValues.length) {
       return data;
     }
 
-    const { key, values } = uniqueValues;
-
-    const valuesMap = values.reduce((result, currentValue) => {
-      result[currentValue] = true;
+    const uniqueValuesMap = uniqueValues.reduce((result, currentValue) => {
+      const { key, values } = currentValue;
+      const valuesMap = values.reduce((result, currentValue) => {
+        result[currentValue] = true;
+        return result;
+      }, {});
+      result[key] = valuesMap;
       return result;
     }, {});
 
     return data.filter((row) => {
-      return row[key] in valuesMap;
+      let result = true;
+      Object.keys(uniqueValuesMap).forEach((columnKey) => {
+        const dataValue = row[columnKey];
+        result = result && uniqueValuesMap[columnKey] && uniqueValuesMap[columnKey][dataValue];
+      });
+      return result;
     });
   }
 }
