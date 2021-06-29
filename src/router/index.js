@@ -12,7 +12,7 @@ const routes = [
   },
   {
     path: '/documents',
-    name: 'About',
+    name: 'Documents',
     component: () => import('../views/Documents.vue'),
   },
 ];

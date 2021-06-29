@@ -17,6 +17,7 @@
               :filteredData="filteredData"
             />
           </th>
+          <th class="header" v-if="hasLinkSlot"></th>
         </tr>
         <tr>
           <th class="header-message" colspan="100%"><slot name="headerMessage" /></th>
@@ -32,6 +33,7 @@
               {{ processRow(columnKey, row[columnKey]) }}
             </div>
           </td>
+          <slot name="link" :row="row"></slot>
         </tr>
       </tbody>
     </table>
@@ -68,6 +70,9 @@ export default {
     },
     showEmptyMessage() {
       return this.filteredData.length === 0;
+    },
+    hasLinkSlot() {
+      return !!this.$slots.link;
     },
   },
   methods: {
@@ -149,7 +154,7 @@ table {
 
 .cell {
   height: 50px;
-  padding: 10px;
+  padding: 8px;
   display: flex;
   align-items: center;
 }

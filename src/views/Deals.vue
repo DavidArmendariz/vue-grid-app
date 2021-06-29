@@ -15,6 +15,13 @@
     <div>
       <grid :filteredData="filteredData">
         <template v-slot:headerMessage>{{ headerMessage }}</template>
+        <template v-slot:link="slotLinkProps">
+          <td>
+            <div class="view-documents">
+              <router-link :to="getLink(slotLinkProps.row)">View Documents</router-link>
+            </div>
+          </td>
+        </template>
       </grid>
     </div>
     <pagination :paginationCount="paginationCount" />
@@ -63,6 +70,19 @@ export default {
       this.paginationCount = paginationCount;
       this.totalRows = total;
     },
+    getLink(row) {
+      return {
+        name: 'Documents',
+        query: {
+          uniqueValues: encodeURIComponent(
+            JSON.stringify({
+              key: 'dealId',
+              values: [row.dealId],
+            })
+          ),
+        },
+      };
+    },
   },
   computed: {
     columnsShown() {
@@ -94,5 +114,13 @@ export default {
 .buttons {
   display: flex;
   margin-left: auto;
+}
+
+.view-documents {
+  text-decoration: none;
+  height: 50px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
 }
 </style>
