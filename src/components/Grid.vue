@@ -10,10 +10,10 @@
           <th class="header" v-for="column in columns" :key="column.key" @click="onHeaderClick(column.key)">
             {{ column.name }}
             <column-filter
-              v-if="column.active"
+              v-if="isColumnActive(column.key)"
               :columnName="column.name"
               :columnKey="column.key"
-              :onClose="onCloseFilters"
+              :onClose="onCloseColumnFilter"
               :filteredData="filteredData"
             />
           </th>
@@ -67,7 +67,7 @@ export default {
     },
     columns() {
       if (this.filteredData.length) {
-        return this.columnKeys.map((key) => ({ key, name: this.columnsMap[key], active: this.isColumnActive(key) }));
+        return this.columnKeys.map((key) => ({ key, name: this.columnsMap[key] }));
       }
       return [];
     },
@@ -81,11 +81,12 @@ export default {
   methods: {
     onHeaderClick(columnKey) {
       if (this.isColumnActive(columnKey)) {
-        this.onCloseFilters();
+        this.onCloseColumnFilter();
+        return;
       }
       this.activeColumnKey = columnKey;
     },
-    onCloseFilters() {
+    onCloseColumnFilter() {
       this.activeColumnKey = null;
     },
     isColumnActive(columnKey) {
