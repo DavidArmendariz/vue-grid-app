@@ -185,4 +185,72 @@ describe('BaseModel', () => {
       expect(baseModel.limitData(data)).toEqual(data);
     });
   });
+
+  describe('setColumnsToDisplay', () => {
+    it('should display all columns if columns is an empty array', () => {
+      baseModel.setFetchOptions();
+      baseModel.setColumnsToDisplay();
+      expect(baseModel.columns).toEqual({
+        id: true,
+        firstName: true,
+        lastName: true,
+      });
+    });
+
+    it('should set the columns correctly', () => {
+      const columns = encodeURIComponent(JSON.stringify(['id']));
+      baseModel.setFetchOptions({ columns });
+      baseModel.setColumnsToDisplay();
+      expect(baseModel.columns).toEqual({
+        id: true,
+        firstName: false,
+        lastName: false,
+      });
+    });
+  });
+
+  describe('filterRowsBySearchString', () => {
+    it('should return data if search is not defined', () => {
+      const data = [
+        { id: 1, firstName: 'david' },
+        { id: 2, firstName: 'andres' },
+      ];
+      baseModel.setFetchOptions();
+      expect(baseModel.filterRowsBySearchString(data)).toEqual(data);
+    });
+
+    it('should return filtered data by search string', () => {
+      const data = [
+        { id: 1, firstName: 'david' },
+        { id: 2, firstName: 'andres' },
+      ];
+      baseModel.setFetchOptions({ search: 'david' });
+      expect(baseModel.filterRowsBySearchString(data)).toEqual([{ id: 1, firstName: 'david' }]);
+      baseModel.setFetchOptions({ search: 'DAVID' });
+      expect(baseModel.filterRowsBySearchString(data)).toEqual([{ id: 1, firstName: 'david' }]);
+      baseModel.setFetchOptions({ search: 'vid' });
+      expect(baseModel.filterRowsBySearchString(data)).toEqual([{ id: 1, firstName: 'david' }]);
+    });
+  });
+
+  describe('filterByUniqueValues', () => {
+    it('should return data if unique values is not defined', () => {
+      const data = [
+        { id: 1, firstName: 'david' },
+        { id: 2, firstName: 'andres' },
+      ];
+      baseModel.setFetchOptions();
+      expect(baseModel.filterByUniqueValues(data)).toEqual(data);
+    });
+
+    it('should return data if unique values is not defined', () => {
+      const data = [
+        { id: 1, firstName: 'david' },
+        { id: 2, firstName: 'andres' },
+      ];
+      const uniqueValues = encodeURIComponent(JSON.stringify({ key: 'firstName', values: ['david'] }));
+      baseModel.setFetchOptions({ uniqueValues });
+      expect(baseModel.filterByUniqueValues(data)).toEqual([{ id: 1, firstName: 'david' }]);
+    });
+  });
 });

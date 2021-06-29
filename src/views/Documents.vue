@@ -74,7 +74,7 @@ export default {
   },
   watch: {
     $route(newRoute, oldRoute) {
-      Utils.handleRouteChange.bind(this)(newRoute, oldRoute);
+      Utils.handleRouteChange.bind(this)(newRoute, oldRoute, Utils.LIMIT);
     },
   },
 };
