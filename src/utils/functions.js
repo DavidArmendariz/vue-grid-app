@@ -89,3 +89,49 @@ export function handleRouteChange(newRoute, oldRoute, limit) {
     this.updateData(newData);
   }
 }
+
+export function shouldPersistedFieldBeChecked(columnKey, getColumnsFromQueryParams) {
+  if (this.persistedFields[columnKey] && getColumnsFromQueryParams.length) {
+    return getColumnsFromQueryParams.includes(columnKey);
+  }
+  return !!this.columnsShown[columnKey];
+}
+
+export function getColumnsFromQueryParams() {
+  let columnsInQueryParams;
+
+  try {
+    columnsInQueryParams = JSON.parse(decodeURIComponent(this.$route.query.columns));
+  } catch {
+    columnsInQueryParams = [];
+  }
+
+  return columnsInQueryParams;
+}
+
+export function processRow(columnKey, row, ellipsis = false) {
+  if (!row) {
+    return '(blank)';
+  }
+
+  let rowContent;
+
+  switch (this.columnsTypes[columnKey]) {
+    case Array:
+      rowContent = row.join(', ') || '(blank)';
+      break;
+    case Date:
+      rowContent = new Date(Date.parse(row)).toLocaleString();
+      break;
+    case Number:
+      rowContent = row.toString();
+      break;
+    default:
+      rowContent = row;
+  }
+
+  if (rowContent.length > 20 && ellipsis) {
+    rowContent = (rowContent + '').slice(0, 20) + '...';
+  }
+  return rowContent;
+}

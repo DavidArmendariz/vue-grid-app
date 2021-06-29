@@ -13,7 +13,7 @@
     </div>
     <pagination :paginationCount="paginationCount" />
     <div>
-      <grid :filteredData="filteredData">
+      <grid :filteredData="filteredData" :columnsShown="columnsShown">
         <template v-slot:headerMessage>{{ headerMessage }}</template>
       </grid>
     </div>
@@ -51,6 +51,7 @@ export default {
       model: this.model,
       columnsMap: Utils.DOCS_COLUMNS_MAP,
       columnsTypes: Utils.DOCS_COLUMNS_TYPES,
+      persistedFields: {},
     };
   },
   mounted() {

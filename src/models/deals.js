@@ -37,7 +37,7 @@ export default class Deals extends BaseModel {
         ...(this.columns.analysts && { analysts: this.getAnalystsFromIds(row.AnalystIds) }),
         ...(this.columns.docCount && { docCount: row.DocCount }),
         ...(this.columns.customField && { customField: row.ClientCustomField }),
-        ...(this.columns.dealId && { dealId: row.DealId }), // dealId to link it to a document
+        dealId: row.DealId, // dealId should always be sent
       };
       processedData.push(processedRow);
       return processedData;

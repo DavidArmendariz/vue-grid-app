@@ -13,7 +13,7 @@
     </div>
     <pagination :paginationCount="paginationCount" />
     <div>
-      <grid :filteredData="filteredData">
+      <grid :filteredData="filteredData" :columnsShown="columnsShown">
         <template v-slot:headerMessage>{{ headerMessage }}</template>
         <template v-slot:link="slotLinkProps">
           <td>
@@ -58,6 +58,9 @@ export default {
       model: this.model,
       columnsMap: Utils.DEALS_COLUMNS_MAP,
       columnsTypes: Utils.DEALS_COLUMNS_TYPES,
+      persistedFields: {
+        dealId: true,
+      },
     };
   },
   mounted() {

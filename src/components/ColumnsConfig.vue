@@ -22,13 +22,14 @@
 
 <script>
 import BaseButton from './BaseButton.vue';
+import * as Utils from '../utils';
 
 export default {
   props: ['columnsShown'],
   components: {
     BaseButton,
   },
-  inject: ['columnsMap'],
+  inject: ['columnsMap', 'persistedFields'],
   data() {
     return {
       showConfig: false,
@@ -42,10 +43,12 @@ export default {
   },
   methods: {
     updateColumnsInfo() {
+      const columnsFromQueryParams = Utils.getColumnsFromQueryParams.bind(this)();
+
       return Object.keys(this.columnsMap).map((columnKey) => ({
         key: columnKey,
         name: this.columnsMap[columnKey],
-        checked: !!this.columnsShown[columnKey],
+        checked: Utils.shouldPersistedFieldBeChecked.bind(this)(columnKey, columnsFromQueryParams),
       }));
     },
     onReset() {

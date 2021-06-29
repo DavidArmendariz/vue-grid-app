@@ -219,6 +219,17 @@ describe('BaseModel', () => {
       expect(baseModel.filterRowsBySearchString(data)).toEqual(data);
     });
 
+    it.only('should return empty array if search is in data but column that contains it is not displayed', () => {
+      const data = [
+        { id: 1, firstName: 'david' },
+        { id: 2, firstName: 'andres' },
+      ];
+      const columns = encodeURIComponent(JSON.stringify(['id']));
+      baseModel.setFetchOptions({ columns, search: 'david' });
+      baseModel.setColumnsToDisplay();
+      expect(baseModel.filterRowsBySearchString(data)).toEqual([]);
+    });
+
     it('should return filtered data by search string', () => {
       const data = [
         { id: 1, firstName: 'david' },

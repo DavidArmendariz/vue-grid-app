@@ -48,8 +48,8 @@ export default {
   components: {
     ColumnFilter,
   },
-  props: ['filteredData'],
-  inject: ['columnsTypes', 'columnsMap'],
+  props: ['filteredData', 'columnsShown'],
+  inject: ['columnsTypes', 'columnsMap', 'persistedFields'],
   data() {
     return {
       activeColumnKey: null,
@@ -58,7 +58,10 @@ export default {
   computed: {
     columnKeys() {
       if (this.filteredData.length) {
-        return Utils.getColumnKeys(this.filteredData);
+        const columnsFromQueryParams = Utils.getColumnsFromQueryParams.bind(this)();
+        return Utils.getColumnKeys(this.filteredData).filter((columnKey) =>
+          Utils.shouldPersistedFieldBeChecked.bind(this)(columnKey, columnsFromQueryParams)
+        );
       }
       return [];
     },
@@ -89,30 +92,7 @@ export default {
       return this.activeColumnKey === columnKey;
     },
     processRow(columnKey, row, ellipsis = true) {
-      if (!row) {
-        return '(blank)';
-      }
-
-      let rowContent;
-
-      switch (this.columnsTypes[columnKey]) {
-        case Array:
-          rowContent = row.join(', ') || '(blank)';
-          break;
-        case Date:
-          rowContent = new Date(Date.parse(row)).toLocaleString();
-          break;
-        case Number:
-          rowContent = row.toString();
-          break;
-        default:
-          rowContent = row;
-      }
-
-      if (rowContent.length > 20 && ellipsis) {
-        rowContent = (rowContent + '').slice(0, 20) + '...';
-      }
-      return rowContent;
+      return Utils.processRow.bind(this)(columnKey, row, ellipsis);
     },
   },
 };

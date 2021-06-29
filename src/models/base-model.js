@@ -98,17 +98,26 @@ export default class BaseModel {
     return data.filter((row) => {
       let containsSearchString = false;
       for (const [columnKey, value] of Object.entries(row)) {
-        if (!value) {
+        if (value === null || value === undefined || !this.columns[columnKey]) {
           continue;
         }
 
-        if (this.columnsTypes[columnKey] === String) {
-          containsSearchString = value.toLowerCase().includes(loweredSearchString);
-        }
-
-        if (this.columnsTypes[columnKey] === Array && value.every((x) => typeof x === 'string')) {
-          const string = Utils.joinArray(value);
-          containsSearchString = string.toLowerCase().includes(loweredSearchString);
+        switch (this.columnsTypes[columnKey]) {
+          case String:
+            containsSearchString = value.toLowerCase().includes(loweredSearchString);
+            break;
+          case Array:
+            if (value.every((x) => typeof x === 'string')) {
+              const string = Utils.joinArray(value);
+              containsSearchString = string.toLowerCase().includes(loweredSearchString);
+            }
+            break;
+          case Number:
+            containsSearchString = value
+              .toString()
+              .toLowerCase()
+              .includes(loweredSearchString);
+            break;
         }
 
         if (containsSearchString) {
