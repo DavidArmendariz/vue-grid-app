@@ -155,13 +155,20 @@ export function getItemFromLocalStorage(key, defaultValue = null) {
   try {
     let keys = key.split('.');
     let item = JSON.parse(window.localStorage.getItem(keys[0]));
+
     keys = keys.slice(1);
+
+    if (!item && !keys.length) {
+      return defaultValue;
+    }
+
     for (const key of keys) {
       item = item[key];
       if (!item) {
         return defaultValue;
       }
     }
+
     return item;
   } catch (err) {
     return defaultValue;

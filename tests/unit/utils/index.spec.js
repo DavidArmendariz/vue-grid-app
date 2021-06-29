@@ -2,12 +2,14 @@ import {
   getColumnKeys,
   getColumnsShown,
   getCSVContent,
+  getFormattedFilters,
+  getItemFromLocalStorage,
   getPaginationNumber,
   handleRouteChange,
   joinArray,
   processRow,
   shouldPersistedFieldBeIncluded,
-} from '../../../src/utils/functions';
+} from '../../../src/utils';
 
 describe('getColumnKeys', () => {
   it('should return column keys', () => {
@@ -227,5 +229,47 @@ describe('shouldPersistedFieldBeIncluded', () => {
       expect(shouldPersistedFieldBeIncluded.bind(context)('id', ['id'])).toBe(true);
       expect(shouldPersistedFieldBeIncluded.bind(context)('name', ['id'])).toBe(false);
     });
+  });
+});
+
+describe('getFormattedFilters', () => {
+  let testLimit = 10;
+
+  it('should return a stringified object of the filters and the offset based on the limit', () => {
+    const filters = { offset: 2, search: 'test' };
+    const result = getFormattedFilters(filters, testLimit);
+    expect(JSON.parse(result)).toEqual({
+      offset: 10,
+      search: 'test',
+    });
+  });
+});
+
+describe('getItemFromLocalStorage', () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+  });
+
+  it('should return the default value if no item is found in local storage', () => {
+    expect(getItemFromLocalStorage('filters')).toEqual(null);
+    expect(getItemFromLocalStorage('filters', {})).toEqual({});
+  });
+
+  it('should return the value from the local storage', () => {
+    window.localStorage.setItem('filters', JSON.stringify({ search: 'test' }));
+    expect(getItemFromLocalStorage('filters')).toEqual({ search: 'test' });
+    expect(getItemFromLocalStorage('filters.search')).toEqual('test');
+  });
+
+  it('should return default value if item is not found in local storage', () => {
+    window.localStorage.setItem('filters', JSON.stringify({ search: 'test' }));
+    expect(getItemFromLocalStorage('filters.offset')).toEqual(null);
+    expect(getItemFromLocalStorage('filters.offset', 1)).toEqual(1);
+  });
+
+  it('should return default value if an error occurs while accessing local storage', () => {
+    window.localStorage.setItem('filters', JSON.stringify(null));
+    expect(getItemFromLocalStorage('filters.offset')).toEqual(null);
+    expect(getItemFromLocalStorage('filters.offset', 1)).toEqual(1);
   });
 });
