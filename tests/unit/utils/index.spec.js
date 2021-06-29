@@ -6,6 +6,7 @@ import {
   getPaginationNumber,
   handleRouteChange,
   joinArray,
+  processRow,
 } from '../../../src/utils/functions';
 
 describe('getColumnKeys', () => {
@@ -222,5 +223,46 @@ describe('handleRouteChange', () => {
       ...newRoute.query,
       offset: 0,
     });
+  });
+});
+
+describe('processRow', () => {
+  let context = {
+    columnsTypes: {
+      id: Number,
+      analysts: Array,
+      createdAt: Date,
+      name: String,
+    },
+  };
+
+  it('should return "(blank)" if data is falsy', () => {
+    expect(processRow.bind(context)(null, null)).toEqual('(blank)');
+  });
+
+  it('should return a string joined by commas if data is an array', () => {
+    const result = processRow.bind(context)('analysts', ['andres', 'david']);
+    expect(result).toEqual('andres, david');
+  });
+
+  it('should return a locale date string if data is a date', () => {
+    const date = '2020-04-29T17:23:00';
+    const result = processRow.bind(context)('createdAt', date);
+    expect(result).toEqual(new Date(Date.parse(date)).toLocaleString());
+  });
+
+  it('should return a number converted to string if data is a number', () => {
+    const result = processRow.bind(context)('id', 1);
+    expect(result).toEqual('1');
+  });
+
+  it('should return data as is if it is a string', () => {
+    const result = processRow.bind(context)('name', 'david');
+    expect(result).toEqual('david');
+  });
+
+  it('should set ellipsis if string is too long', () => {
+    const result = processRow.bind(context)('name', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', true);
+    expect(result).toEqual('aaaaaaaaaaaaaaaaaaaa...');
   });
 });
