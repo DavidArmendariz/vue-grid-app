@@ -61,9 +61,9 @@ export default {
   computed: {
     columnKeys() {
       if (this.filteredData.length) {
-        const columnsFromQueryParams = Utils.getColumnsFromQueryParams.bind(this)();
+        const columnsFromLocalStorage = Utils.getItemFromLocalStorage('filters.columns', []);
         return Utils.getColumnKeys(this.filteredData).filter((columnKey) =>
-          Utils.shouldPersistedFieldBeIncluded.bind(this)(columnKey, columnsFromQueryParams)
+          Utils.shouldPersistedFieldBeIncluded.bind(this)(columnKey, columnsFromLocalStorage)
         );
       }
       return [];

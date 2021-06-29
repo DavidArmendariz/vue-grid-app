@@ -53,10 +53,13 @@ export default {
       columnsMap: Utils.DOCS_COLUMNS_MAP,
       columnsTypes: Utils.DOCS_COLUMNS_TYPES,
       persistedFields: {},
+      onFilterChange: this.onFilterChange,
     };
   },
   mounted() {
-    const response = this.model.getData(this.$route.query);
+    let filters = Utils.getItemFromLocalStorage('filters', {});
+    filters = Utils.getFormattedFilters(filters);
+    const response = this.model.getData(filters);
     this.updateData(response);
   },
   methods: {
@@ -64,6 +67,9 @@ export default {
       this.filteredData = data;
       this.paginationCount = paginationCount;
       this.totalRows = total;
+    },
+    onFilterChange(filterType, value) {
+      Utils.handleFilterChange.bind(this)(filterType, value);
     },
   },
   computed: {
@@ -76,6 +82,7 @@ export default {
   },
   watch: {
     $route(newRoute, oldRoute) {
+      // TODO: Change this for offset only and probably search as well?
       Utils.handleRouteChange.bind(this)(newRoute, oldRoute, Utils.LIMIT);
     },
   },

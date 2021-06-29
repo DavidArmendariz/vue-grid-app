@@ -1,9 +1,7 @@
 import {
   getColumnKeys,
-  getColumnsFromQueryParams,
   getColumnsShown,
   getCSVContent,
-  getCurrentSort,
   getPaginationNumber,
   handleRouteChange,
   joinArray,
@@ -88,33 +86,6 @@ describe('getPaginationNumber', () => {
   });
 });
 
-describe('getCurrentSort', () => {
-  it('should return current sort of query params', () => {
-    const sort = [
-      { key: 'firstName', order: 'asc' },
-      { key: 'lastName', order: 'desc' },
-    ];
-    const context = {
-      $route: {
-        query: { sort: encodeURIComponent(JSON.stringify(sort)) },
-      },
-      columnKey: 'lastName',
-    };
-    const result = getCurrentSort.bind(context)();
-    expect(result).toEqual([{ key: 'firstName', order: 'asc' }]);
-  });
-
-  it('should return an empty array if parsing query params fails', () => {
-    const context = {
-      $route: {
-        query: { sort: '' },
-      },
-    };
-    const result = getCurrentSort.bind(context)();
-    expect(result).toEqual([]);
-  });
-});
-
 describe('handleRouteChange', () => {
   let context;
   let testLimit = 10;
@@ -152,26 +123,6 @@ describe('handleRouteChange', () => {
     });
   });
 
-  it('should call getData with the correct arguments if search changed', () => {
-    const newRoute = {
-      query: {
-        search: 'test1',
-      },
-    };
-    const oldRoute = {
-      query: {
-        search: 'test2',
-      },
-    };
-    handleRouteChange.bind(context)(newRoute, oldRoute, testLimit);
-    expect(spyOnGetData).toHaveBeenCalledTimes(1);
-    expect(spyOnUpdateData).toHaveBeenCalledTimes(1);
-    expect(spyOnGetData).toHaveBeenCalledWith({
-      ...newRoute.query,
-      offset: 0,
-    });
-  });
-
   it('should not do anything if query params do not change', () => {
     const newRoute = {
       query: {
@@ -186,71 +137,6 @@ describe('handleRouteChange', () => {
     handleRouteChange.bind(context)(newRoute, oldRoute, testLimit);
     expect(spyOnGetData).not.toHaveBeenCalled();
     expect(spyOnUpdateData).not.toHaveBeenCalled();
-  });
-
-  it('should call getData with the correct arguments if columns changed', () => {
-    const newRoute = {
-      query: {
-        columns: encodeURIComponent(JSON.stringify(['id'])),
-      },
-    };
-    const oldRoute = {
-      query: {
-        columns: encodeURIComponent(JSON.stringify(['id', 'firstName'])),
-      },
-    };
-    handleRouteChange.bind(context)(newRoute, oldRoute, testLimit);
-    expect(spyOnGetData).toHaveBeenCalledTimes(1);
-    expect(spyOnUpdateData).toHaveBeenCalledTimes(1);
-    expect(spyOnGetData).toHaveBeenCalledWith({
-      ...newRoute.query,
-      offset: 0,
-    });
-  });
-
-  it('should call getData with the correct arguments if unique values changed', () => {
-    const newRoute = {
-      query: {
-        uniqueValues: encodeURIComponent(JSON.stringify({ key: 'id', values: ['test1'] })),
-      },
-    };
-    const oldRoute = {
-      query: {
-        uniqueValues: encodeURIComponent(JSON.stringify({ key: 'id', values: ['test2'] })),
-      },
-    };
-    handleRouteChange.bind(context)(newRoute, oldRoute, testLimit);
-    expect(spyOnGetData).toHaveBeenCalledTimes(1);
-    expect(spyOnUpdateData).toHaveBeenCalledTimes(1);
-    expect(spyOnGetData).toHaveBeenCalledWith({
-      ...newRoute.query,
-      offset: 0,
-    });
-  });
-
-  it('should call getData with the correct arguments if sort changed', () => {
-    const newRoute = {
-      query: {
-        sort: encodeURIComponent(JSON.stringify([{ key: 'id', order: 'asc' }])),
-      },
-    };
-    const oldRoute = {
-      query: {
-        sort: encodeURIComponent(
-          JSON.stringify([
-            { key: 'id', order: 'asc' },
-            { key: 'firstName', order: 'desc' },
-          ])
-        ),
-      },
-    };
-    handleRouteChange.bind(context)(newRoute, oldRoute, testLimit);
-    expect(spyOnGetData).toHaveBeenCalledTimes(1);
-    expect(spyOnUpdateData).toHaveBeenCalledTimes(1);
-    expect(spyOnGetData).toHaveBeenCalledWith({
-      ...newRoute.query,
-      offset: 0,
-    });
   });
 });
 
@@ -297,22 +183,6 @@ describe('processRow', () => {
   it('should set ellipsis if string is too long', () => {
     const result = processRow.bind(context)('name', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', true);
     expect(result).toEqual('aaaaaaaaaaaaaaaaaaaa...');
-  });
-});
-
-describe('getColumnsFromQueryParams', () => {
-  it('should get the columns from the query params', () => {
-    const columns = ['id', 'firstName'];
-    const context = {
-      $route: { query: { columns: encodeURIComponent(JSON.stringify(columns)) } },
-    };
-    const result = getColumnsFromQueryParams.bind(context)();
-    expect(result).toEqual(columns);
-  });
-
-  it('should return an empty array if parsing the query params failed', () => {
-    const result = getColumnsFromQueryParams.bind({})();
-    expect(result).toEqual([]);
   });
 });
 

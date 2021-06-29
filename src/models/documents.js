@@ -27,7 +27,7 @@ export default class Documents extends BaseModel {
     }, []);
   }
 
-  getData(options = {}) {
+  getData(options) {
     this.setFetchOptions(options);
     this.setColumnsToDisplay();
 

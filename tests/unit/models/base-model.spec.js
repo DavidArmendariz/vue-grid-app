@@ -44,7 +44,8 @@ describe('BaseModel', () => {
     });
 
     it('should parse offset as an integer', () => {
-      baseModel.setFetchOptions({ offset: '2' });
+      const filters = { offset: 2 };
+      baseModel.setFetchOptions(JSON.stringify(filters));
       expect(baseModel.fetchOptions).toMatchObject({
         offset: 2,
       });
@@ -52,7 +53,8 @@ describe('BaseModel', () => {
 
     it('should parse columns into an array of strings', () => {
       const columnsArray = ['id', 'firstName'];
-      baseModel.setFetchOptions({ columns: encodeURIComponent(JSON.stringify(columnsArray)) });
+      const filters = { columns: columnsArray };
+      baseModel.setFetchOptions(JSON.stringify(filters));
       expect(baseModel.fetchOptions).toMatchObject({
         columns: columnsArray,
       });
@@ -60,7 +62,8 @@ describe('BaseModel', () => {
 
     it('should decode search string', () => {
       const searchString = 'test!!!%%%';
-      baseModel.setFetchOptions({ search: encodeURIComponent(searchString) });
+      const filters = { search: searchString };
+      baseModel.setFetchOptions(JSON.stringify(filters));
       expect(baseModel.fetchOptions).toMatchObject({
         search: searchString,
       });
@@ -68,17 +71,19 @@ describe('BaseModel', () => {
 
     it('should parse sort into an array of objects', () => {
       const sortArray = [{ key: 'id', order: 'asc' }];
-      baseModel.setFetchOptions({ sort: encodeURIComponent(JSON.stringify(sortArray)) });
+      const filters = { sort: sortArray };
+      baseModel.setFetchOptions(JSON.stringify(filters));
       expect(baseModel.fetchOptions).toMatchObject({
         sort: sortArray,
       });
     });
 
     it('should parse uniqueValues into an object', () => {
-      const uniqueValuesObject = { key: 'firstName', values: ['david', 'adrian'] };
-      baseModel.setFetchOptions({ uniqueValues: encodeURIComponent(JSON.stringify(uniqueValuesObject)) });
+      const uniqueValuesArray = [{ key: 'firstName', values: ['david', 'adrian'] }];
+      const filters = { uniqueValues: uniqueValuesArray };
+      baseModel.setFetchOptions(JSON.stringify(filters));
       expect(baseModel.fetchOptions).toMatchObject({
-        uniqueValues: uniqueValuesObject,
+        uniqueValues: uniqueValuesArray,
       });
     });
   });
@@ -187,7 +192,8 @@ describe('BaseModel', () => {
         { id: 2, firstName: 'adrian' },
         { id: 3, firstName: 'andres' },
       ];
-      baseModel.setFetchOptions({ all: 'true' });
+      const filters = { all: true };
+      baseModel.setFetchOptions(JSON.stringify(filters));
       expect(baseModel.limitData(data)).toEqual(data);
     });
   });
@@ -204,8 +210,8 @@ describe('BaseModel', () => {
     });
 
     it('should set the columns correctly', () => {
-      const columns = encodeURIComponent(JSON.stringify(['id']));
-      baseModel.setFetchOptions({ columns });
+      const filters = { columns: ['id'] };
+      baseModel.setFetchOptions(JSON.stringify(filters));
       baseModel.setColumnsToDisplay();
       expect(baseModel.columns).toEqual({
         id: true,
@@ -230,8 +236,8 @@ describe('BaseModel', () => {
         { id: 1, firstName: 'david' },
         { id: 2, firstName: 'andres' },
       ];
-      const columns = encodeURIComponent(JSON.stringify(['id']));
-      baseModel.setFetchOptions({ columns, search: 'david' });
+      const filters = { columns: ['id'], search: 'david' };
+      baseModel.setFetchOptions(JSON.stringify(filters));
       baseModel.setColumnsToDisplay();
       expect(baseModel.filterRowsBySearchString(data)).toEqual([]);
     });
@@ -241,11 +247,11 @@ describe('BaseModel', () => {
         { id: 1, firstName: 'david' },
         { id: 2, firstName: 'andres' },
       ];
-      baseModel.setFetchOptions({ search: 'david' });
+      baseModel.setFetchOptions(JSON.stringify({ search: 'david' }));
       expect(baseModel.filterRowsBySearchString(data)).toEqual([{ id: 1, firstName: 'david' }]);
-      baseModel.setFetchOptions({ search: 'DAVID' });
+      baseModel.setFetchOptions(JSON.stringify({ search: 'DAVID' }));
       expect(baseModel.filterRowsBySearchString(data)).toEqual([{ id: 1, firstName: 'david' }]);
-      baseModel.setFetchOptions({ search: 'vid' });
+      baseModel.setFetchOptions(JSON.stringify({ search: 'vid' }));
       expect(baseModel.filterRowsBySearchString(data)).toEqual([{ id: 1, firstName: 'david' }]);
     });
   });
@@ -260,13 +266,13 @@ describe('BaseModel', () => {
       expect(baseModel.filterByUniqueValues(data)).toEqual(data);
     });
 
-    it.only('should return data if unique values is not defined', () => {
+    it('should return data if unique values is not defined', () => {
       const data = [
         { id: 1, firstName: 'david' },
         { id: 2, firstName: 'andres' },
       ];
-      const uniqueValues = encodeURIComponent(JSON.stringify([{ key: 'firstName', values: ['david'] }]));
-      baseModel.setFetchOptions({ uniqueValues });
+      const uniqueValues = [{ key: 'firstName', values: ['david'] }];
+      baseModel.setFetchOptions(JSON.stringify({ uniqueValues }));
       expect(baseModel.filterByUniqueValues(data)).toEqual([{ id: 1, firstName: 'david' }]);
     });
   });

@@ -20,17 +20,18 @@ export default {
   props: ['paginationCount'],
   data() {
     return {
-      activePagination: parseInt(this.$route.query?.offset) || 1,
+      activePagination: Utils.getItemFromLocalStorage('filters.offset', 1),
     };
   },
+  inject: ['onFilterChange'],
   methods: {
     onClickLeftArrow() {
       this.activePagination -= 1;
-      this.addOffsetQueryParam();
+      this.onChangePagination();
     },
     onClickRightArrow() {
       this.activePagination += 1;
-      this.addOffsetQueryParam();
+      this.onChangePagination();
     },
     isActiveClass(n) {
       return n === this.activePagination ? 'active' : '';
@@ -40,16 +41,10 @@ export default {
         return;
       }
       this.activePagination = n;
-      this.addOffsetQueryParam();
+      this.onChangePagination();
     },
-    addOffsetQueryParam() {
-      const existingQueryParams = this.$route.query;
-      this.$router.push({ query: { ...existingQueryParams, offset: this.activePagination } });
-    },
-  },
-  watch: {
-    $route(newRoute) {
-      this.activePagination = parseInt(newRoute.query?.offset) || 1;
+    onChangePagination() {
+      this.onFilterChange('offset', this.activePagination);
     },
   },
   computed: {
@@ -61,6 +56,11 @@ export default {
     },
     getPaginationNumbers() {
       return Utils.getPaginationNumber.bind(this)(Utils.MAX_PAGINATION);
+    },
+  },
+  watch: {
+    paginationCount() {
+      this.activePagination = Utils.getItemFromLocalStorage('filters.offset', 1);
     },
   },
 };

@@ -11,6 +11,7 @@
 
   a {
     font-weight: bold;
+    cursor: pointer;
     color: #2c3e50;
 
     &.router-link-exact-active {

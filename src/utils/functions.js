@@ -1,4 +1,5 @@
 import Papa from 'papaparse';
+import { LIMIT } from './constants';
 
 export function getColumnKeys(data) {
   return Object.keys(data[0] || {});
@@ -17,19 +18,6 @@ export function getColumnsShown() {
     result[columnKey] = true;
     return result;
   }, {});
-}
-
-export function getCurrentSort() {
-  const existingQueryParams = this.$route.query;
-  let existingSort;
-
-  try {
-    existingSort = JSON.parse(decodeURIComponent(existingQueryParams.sort));
-  } catch {
-    existingSort = [];
-  }
-
-  return existingSort.filter((sortEntry) => sortEntry.key !== this.columnKey);
 }
 
 export function getPaginationNumber(maxPagination) {
@@ -66,47 +54,24 @@ export function getPaginationNumber(maxPagination) {
 
 export function handleRouteChange(newRoute, oldRoute, limit) {
   const offsetChanged = newRoute.query.offset !== oldRoute.query.offset;
-  const searchChanged = newRoute.query.search !== oldRoute.query.search;
-  const columnsChanged = newRoute.query.columns !== oldRoute.query.columns;
-  const sortChanged = newRoute.query.sort !== oldRoute.query.sort;
-  const uniqueValuesChanged = newRoute.query.uniqueValues !== oldRoute.query.uniqueValues;
 
-  if (offsetChanged || columnsChanged || sortChanged || uniqueValuesChanged) {
+  if (offsetChanged) {
     const offset = parseInt(newRoute.query.offset) || 1;
+    const filters = getItemFromLocalStorage('filters', {});
     const newData = this.model.getData({
-      ...newRoute.query,
+      ...filters,
       offset: limit * (offset - 1),
     });
     this.updateData(newData);
     return;
   }
-
-  if (searchChanged) {
-    const newData = this.model.getData({
-      ...newRoute.query,
-      offset: 0,
-    });
-    this.updateData(newData);
-  }
 }
 
-export function shouldPersistedFieldBeIncluded(columnKey, getColumnsFromQueryParams) {
-  if (this.persistedFields[columnKey] && getColumnsFromQueryParams.length) {
-    return getColumnsFromQueryParams.includes(columnKey);
+export function shouldPersistedFieldBeIncluded(columnKey, storedColumns) {
+  if (this.persistedFields[columnKey] && storedColumns.length) {
+    return storedColumns.includes(columnKey);
   }
   return !!this.columnsShown[columnKey];
-}
-
-export function getColumnsFromQueryParams() {
-  let columnsInQueryParams;
-
-  try {
-    columnsInQueryParams = JSON.parse(decodeURIComponent(this.$route.query.columns));
-  } catch {
-    columnsInQueryParams = [];
-  }
-
-  return columnsInQueryParams;
 }
 
 export function processRow(columnKey, row, ellipsis = false) {
@@ -159,7 +124,7 @@ export function getUniqueValues() {
   }, []);
 }
 
-export function handleFilterChange(filterType, value, limit) {
+export function handleFilterChange(filterType, value, limit = LIMIT) {
   let filters = window.localStorage.getItem('filters');
 
   try {
@@ -173,26 +138,20 @@ export function handleFilterChange(filterType, value, limit) {
 
   if (filterChanged) {
     filters[filterType] = value;
-    let offset;
 
     if (filterType === 'search') {
-      offset = 1;
+      filters.offset = 1;
     } else {
-      offset = parseInt(filters.offset) || 1;
+      filters.offset = filters.offset || 1;
     }
 
-    const newData = this.model.getData(
-      JSON.stringify({
-        ...filters,
-        offset: limit * (offset - 1),
-      })
-    );
+    const newData = this.model.getData(getFormattedFilters(filters, limit));
     window.localStorage.setItem('filters', JSON.stringify(filters));
     this.updateData(newData);
   }
 }
 
-export function getItemFromLocalStorage(key) {
+export function getItemFromLocalStorage(key, defaultValue = null) {
   try {
     let keys = key.split('.');
     let item = JSON.parse(window.localStorage.getItem(keys[0]));
@@ -200,12 +159,18 @@ export function getItemFromLocalStorage(key) {
     for (const key of keys) {
       item = item[key];
       if (!item) {
-        return null;
+        return defaultValue;
       }
     }
     return item;
   } catch (err) {
-    console.error('Something went wrong: ', err);
-    return null;
+    return defaultValue;
   }
+}
+
+export function getFormattedFilters(filters, limit = LIMIT) {
+  return JSON.stringify({
+    ...filters,
+    offset: limit * (filters.offset - 1),
+  });
 }

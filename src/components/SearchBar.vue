@@ -9,10 +9,12 @@
 </template>
 
 <script>
+import * as Utils from '../utils';
+
 export default {
   data() {
     return {
-      filter: decodeURIComponent(this.$route.query.search || ''),
+      filter: Utils.getItemFromLocalStorage('filters.search', ''),
     };
   },
   inject: ['onFilterChange'],

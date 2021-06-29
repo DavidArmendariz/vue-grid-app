@@ -43,12 +43,12 @@ export default {
   },
   methods: {
     updateColumnsInfo() {
-      const columnsFromQueryParams = Utils.getColumnsFromQueryParams.bind(this)();
+      const columnsFromLocalStorage = Utils.getItemFromLocalStorage('filters.columns', []);
 
       return Object.keys(this.columnsMap).map((columnKey) => ({
         key: columnKey,
         name: this.columnsMap[columnKey],
-        checked: Utils.shouldPersistedFieldBeIncluded.bind(this)(columnKey, columnsFromQueryParams),
+        checked: columnsFromLocalStorage.includes(columnKey),
       }));
     },
     onReset() {

@@ -63,13 +63,13 @@ export default {
       return Utils.getUniqueValues.bind(this)();
     },
     onSortAlphabetically(order) {
-      const currentSort = Utils.getCurrentSort.bind(this)();
+      const currentSort = Utils.getItemFromLocalStorage('filters.sort', []);
       const sort = encodeURIComponent(JSON.stringify([...currentSort, { key: this.columnKey, order }]));
       this.$router.push({ query: { ...this.$route.query, sort } });
       this.onClose();
     },
     onClearFilter() {
-      const currentSort = Utils.getCurrentSort.bind(this)();
+      const currentSort = Utils.getItemFromLocalStorage('filters.sort', []);
       this.$router.push({ query: { ...this.$route.query, sort: encodeURIComponent(JSON.stringify(currentSort)) } });
       this.onClose();
     },
