@@ -2,8 +2,8 @@
   <div @click.stop class="column-filter">
     <div class="column-name">{{ columnName }}</div>
     <div v-if="isColumnAlphabeticallySortable" class="alphabetical-sorting">
-      <div @click="onSortAlphabetically('asc')">Sort A to Z</div>
-      <div @click="onSortAlphabetically('desc')">Sort Z to A</div>
+      <div @click="onSort('asc')">Sort A to Z</div>
+      <div @click="onSort('desc')">Sort Z to A</div>
     </div>
     <input class="filter-search-bar" type="text" :placeholder="placeholder" v-model="searchFilter" />
     <div class="filters-options">
@@ -32,7 +32,7 @@ import * as Utils from '../utils';
 
 export default {
   props: ['columnName', 'columnKey', 'onClose'],
-  inject: ['columnsTypes', 'model'],
+  inject: ['columnsTypes', 'model', 'onFilterChange'],
   components: {
     BaseButton,
   },
@@ -62,15 +62,15 @@ export default {
     getUniqueValues() {
       return Utils.getUniqueValues.bind(this)();
     },
-    onSortAlphabetically(order) {
-      const currentSort = Utils.getItemFromLocalStorage('filters.sort', []);
-      const sort = encodeURIComponent(JSON.stringify([...currentSort, { key: this.columnKey, order }]));
-      this.$router.push({ query: { ...this.$route.query, sort } });
+    onSort(order) {
+      const sort = Utils.getItemFromLocalStorage('filters.sort', []).filter((entry) => entry.key !== this.columnKey);
+      sort.push({ key: this.columnKey, order });
+      this.onFilterChange('sort', sort);
       this.onClose();
     },
     onClearFilter() {
-      const currentSort = Utils.getItemFromLocalStorage('filters.sort', []);
-      this.$router.push({ query: { ...this.$route.query, sort: encodeURIComponent(JSON.stringify(currentSort)) } });
+      const sort = Utils.getItemFromLocalStorage('filters.sort', []).filter((entry) => entry.key !== this.columnKey);
+      this.onFilterChange('sort', sort);
       this.onClose();
     },
     onChange(event) {
