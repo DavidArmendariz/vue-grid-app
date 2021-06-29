@@ -31,6 +31,9 @@
           <td v-for="columnKey in columnKeys" :key="`${row.id}-${columnKey}`">
             <div class="cell">
               {{ processRow(columnKey, row[columnKey]) }}
+              <span class="tooltip" v-if="shouldShowTooltip(columnKey, row[columnKey])">{{
+                processRow(columnKey, row[columnKey], false)
+              }}</span>
             </div>
           </td>
           <slot name="link" :row="row"></slot>
@@ -95,6 +98,9 @@ export default {
     processRow(columnKey, row, ellipsis = true) {
       return Utils.processRow.bind(this)(columnKey, row, ellipsis);
     },
+    shouldShowTooltip(columnKey, row) {
+      return this.processRow(columnKey, row) !== this.processRow(columnKey, row, false);
+    },
   },
 };
 </script>
@@ -138,5 +144,27 @@ table {
   padding: 8px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  position: relative;
+
+  &:hover {
+    span.tooltip {
+      display: block;
+    }
+  }
+}
+
+.tooltip {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  background-color: white;
+  border: 1px solid #5c99b7;
+  border-radius: 1rem;
+  padding: 5px;
+  color: #5c99b7;
+  top: -5px;
+  left: 105%;
+  overflow-wrap: break-word;
 }
 </style>

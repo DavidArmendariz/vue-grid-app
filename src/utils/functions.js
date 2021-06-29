@@ -133,5 +133,6 @@ export function processRow(columnKey, row, ellipsis = false) {
   if (rowContent.length > 20 && ellipsis) {
     rowContent = (rowContent + '').slice(0, 20) + '...';
   }
+
   return rowContent;
 }

@@ -11,12 +11,13 @@
         <export-button fileName="documents_data.csv" />
       </div>
     </div>
+
     <pagination :paginationCount="paginationCount" />
-    <div>
-      <grid :filteredData="filteredData" :columnsShown="columnsShown">
-        <template v-slot:headerMessage>{{ headerMessage }}</template>
-      </grid>
-    </div>
+
+    <grid :filteredData="filteredData" :columnsShown="columnsShown">
+      <template v-slot:headerMessage>{{ headerMessage }}</template>
+    </grid>
+
     <pagination :paginationCount="paginationCount" />
   </div>
 </template>

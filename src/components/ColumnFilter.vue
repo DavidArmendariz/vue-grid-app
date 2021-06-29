@@ -5,8 +5,8 @@
       <div @click="onSortAlphabetically('asc')">Sort A to Z</div>
       <div @click="onSortAlphabetically('desc')">Sort Z to A</div>
     </div>
+    <input class="filter-search-bar" type="text" :placeholder="placeholder" v-model="searchFilter" />
     <div class="filters-options">
-      <input class="filter-search-bar" type="text" :placeholder="placeholder" v-model="searchFilter" />
       <div v-for="entry in uniqueValues" :key="entry.name">
         <input
           type="checkbox"
@@ -38,9 +38,12 @@ export default {
   },
   data() {
     return {
-      uniqueValues: this.getUniqueValues(),
+      uniqueValues: [],
       searchFilter: '',
     };
+  },
+  mounted() {
+    this.uniqueValues = this.getUniqueValues();
   },
   computed: {
     isColumnAlphabeticallySortable() {
@@ -57,7 +60,7 @@ export default {
   },
   methods: {
     getUniqueValues() {
-      const uniqueValues = this.model.getUniqueValuesForColumn(this.columnKey, { ...this.$route.query, all: 'true' });
+      const uniqueValues = this.model.getUniqueValuesForColumn(this.columnKey, { all: 'true' });
       return uniqueValues.reduce((result, currentValue) => {
         const entry = {
           value: currentValue,
@@ -79,10 +82,21 @@ export default {
       this.$router.push({ query: { ...this.$route.query, sort: encodeURIComponent(JSON.stringify(currentSort)) } });
       this.onClose();
     },
-    onChange() {
+    onChange(event) {
+      if ((event.target._value === null || event.target._value === undefined) && this.uniqueValues.length === 1) {
+        return;
+      }
       const checkedValues = this.uniqueValues.filter((entry) => entry.checked).map((entry) => entry.value || null);
       const data = { key: this.columnKey, values: checkedValues };
-      const encodedData = encodeURIComponent(JSON.stringify(data));
+      let existingUniqueValues;
+
+      try {
+        existingUniqueValues = JSON.parse(decodeURIComponent(this.$route.query.uniqueValues));
+      } catch {
+        existingUniqueValues = [];
+      }
+
+      const encodedData = encodeURIComponent(JSON.stringify([...existingUniqueValues, data]));
       this.$router.push({ query: { ...this.$route.query, uniqueValues: encodedData } });
     },
   },
@@ -100,7 +114,6 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  font-size: 1rem;
 }
 
 .column-name {
@@ -119,9 +132,10 @@ export default {
 }
 
 .filters-options {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  text-align: left;
+  max-height: 200px;
+  width: 100%;
+  overflow-y: auto;
 }
 
 .filter-search-bar {

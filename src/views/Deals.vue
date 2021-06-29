@@ -11,19 +11,20 @@
         <export-button fileName="deals_data.csv" />
       </div>
     </div>
+
     <pagination :paginationCount="paginationCount" />
-    <div>
-      <grid :filteredData="filteredData" :columnsShown="columnsShown">
-        <template v-slot:headerMessage>{{ headerMessage }}</template>
-        <template v-slot:link="slotLinkProps">
-          <td>
-            <div class="view-documents">
-              <router-link :to="getLink(slotLinkProps.row)">View Documents</router-link>
-            </div>
-          </td>
-        </template>
-      </grid>
-    </div>
+
+    <grid :filteredData="filteredData" :columnsShown="columnsShown">
+      <template v-slot:headerMessage>{{ headerMessage }}</template>
+      <template v-slot:link="slotLinkProps">
+        <td>
+          <div class="view-documents">
+            <router-link :to="getLink(slotLinkProps.row)">View Documents</router-link>
+          </div>
+        </td>
+      </template>
+    </grid>
+
     <pagination :paginationCount="paginationCount" />
   </div>
 </template>
@@ -122,10 +123,12 @@ export default {
 }
 
 .view-documents {
-  text-decoration: none;
   height: 50px;
   padding: 8px;
   display: flex;
   align-items: center;
+  a {
+    text-decoration: none;
+  }
 }
 </style>
