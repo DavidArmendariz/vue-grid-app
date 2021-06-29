@@ -84,6 +84,11 @@ describe('BaseModel', () => {
   });
 
   describe('buildHashMap', () => {
+    it('should return an empty object if key is not present in data', () => {
+      baseModel.data = {};
+      expect(baseModel.buildHashMap('people', 'id')).toEqual({});
+    });
+
     it('should build a hash map from an array of objects containing an id', () => {
       const data = {
         people: [

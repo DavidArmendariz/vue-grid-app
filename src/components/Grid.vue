@@ -60,7 +60,7 @@ export default {
       if (this.filteredData.length) {
         const columnsFromQueryParams = Utils.getColumnsFromQueryParams.bind(this)();
         return Utils.getColumnKeys(this.filteredData).filter((columnKey) =>
-          Utils.shouldPersistedFieldBeChecked.bind(this)(columnKey, columnsFromQueryParams)
+          Utils.shouldPersistedFieldBeIncluded.bind(this)(columnKey, columnsFromQueryParams)
         );
       }
       return [];

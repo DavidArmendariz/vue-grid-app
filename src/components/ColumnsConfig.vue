@@ -48,7 +48,7 @@ export default {
       return Object.keys(this.columnsMap).map((columnKey) => ({
         key: columnKey,
         name: this.columnsMap[columnKey],
-        checked: Utils.shouldPersistedFieldBeChecked.bind(this)(columnKey, columnsFromQueryParams),
+        checked: Utils.shouldPersistedFieldBeIncluded.bind(this)(columnKey, columnsFromQueryParams),
       }));
     },
     onReset() {

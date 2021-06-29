@@ -1,5 +1,6 @@
 import {
   getColumnKeys,
+  getColumnsFromQueryParams,
   getColumnsShown,
   getCSVContent,
   getCurrentSort,
@@ -7,6 +8,7 @@ import {
   handleRouteChange,
   joinArray,
   processRow,
+  shouldPersistedFieldBeIncluded,
 } from '../../../src/utils/functions';
 
 describe('getColumnKeys', () => {
@@ -87,7 +89,7 @@ describe('getPaginationNumber', () => {
 });
 
 describe('getCurrentSort', () => {
-  it('should return current of query params', () => {
+  it('should return current sort of query params', () => {
     const sort = [
       { key: 'firstName', order: 'asc' },
       { key: 'lastName', order: 'desc' },
@@ -100,6 +102,16 @@ describe('getCurrentSort', () => {
     };
     const result = getCurrentSort.bind(context)();
     expect(result).toEqual([{ key: 'firstName', order: 'asc' }]);
+  });
+
+  it('should return an empty array if parsing query params fails', () => {
+    const context = {
+      $route: {
+        query: { sort: '' },
+      },
+    };
+    const result = getCurrentSort.bind(context)();
+    expect(result).toEqual([]);
   });
 });
 
@@ -148,7 +160,7 @@ describe('handleRouteChange', () => {
     };
     const oldRoute = {
       query: {
-        offset: 'test2',
+        search: 'test2',
       },
     };
     handleRouteChange.bind(context)(newRoute, oldRoute, testLimit);
@@ -160,6 +172,22 @@ describe('handleRouteChange', () => {
     });
   });
 
+  it('should not do anything if query params do not change', () => {
+    const newRoute = {
+      query: {
+        search: 'test1',
+      },
+    };
+    const oldRoute = {
+      query: {
+        search: 'test1',
+      },
+    };
+    handleRouteChange.bind(context)(newRoute, oldRoute, testLimit);
+    expect(spyOnGetData).not.toHaveBeenCalled();
+    expect(spyOnUpdateData).not.toHaveBeenCalled();
+  });
+
   it('should call getData with the correct arguments if columns changed', () => {
     const newRoute = {
       query: {
@@ -168,7 +196,7 @@ describe('handleRouteChange', () => {
     };
     const oldRoute = {
       query: {
-        offset: encodeURIComponent(JSON.stringify(['id', 'firstName'])),
+        columns: encodeURIComponent(JSON.stringify(['id', 'firstName'])),
       },
     };
     handleRouteChange.bind(context)(newRoute, oldRoute, testLimit);
@@ -245,6 +273,11 @@ describe('processRow', () => {
     expect(result).toEqual('andres, david');
   });
 
+  it('should return "(blank)" if data is an empty array', () => {
+    const result = processRow.bind(context)('analysts', []);
+    expect(result).toEqual('(blank)');
+  });
+
   it('should return a locale date string if data is a date', () => {
     const date = '2020-04-29T17:23:00';
     const result = processRow.bind(context)('createdAt', date);
@@ -264,5 +297,65 @@ describe('processRow', () => {
   it('should set ellipsis if string is too long', () => {
     const result = processRow.bind(context)('name', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', true);
     expect(result).toEqual('aaaaaaaaaaaaaaaaaaaa...');
+  });
+});
+
+describe('getColumnsFromQueryParams', () => {
+  it('should get the columns from the query params', () => {
+    const columns = ['id', 'firstName'];
+    const context = {
+      $route: { query: { columns: encodeURIComponent(JSON.stringify(columns)) } },
+    };
+    const result = getColumnsFromQueryParams.bind(context)();
+    expect(result).toEqual(columns);
+  });
+
+  it('should return an empty array if parsing the query params failed', () => {
+    const result = getColumnsFromQueryParams.bind({})();
+    expect(result).toEqual([]);
+  });
+});
+
+describe('shouldPersistedFieldBeIncluded', () => {
+  describe('when the column key is not in the persisted fields', () => {
+    it('should check if the column key is in the columns shown', () => {
+      const context = {
+        persistedFields: {},
+        columnsShown: {
+          id: true,
+          name: false,
+        },
+      };
+      expect(shouldPersistedFieldBeIncluded.bind(context)('id')).toBe(true);
+      expect(shouldPersistedFieldBeIncluded.bind(context)('name')).toBe(false);
+    });
+  });
+
+  describe('when the column key is in the persisted fields', () => {
+    it('should check if the column key is in the columns shown if the columns from query params is an empty array', () => {
+      const context = {
+        persistedFields: {
+          id: true,
+          name: true,
+        },
+        columnsShown: {
+          id: true,
+          name: false,
+        },
+      };
+      expect(shouldPersistedFieldBeIncluded.bind(context)('id', [])).toBe(true);
+      expect(shouldPersistedFieldBeIncluded.bind(context)('name', [])).toBe(false);
+    });
+
+    it('should check if the column key is in the columns from query params', () => {
+      const context = {
+        persistedFields: {
+          id: true,
+          name: true,
+        },
+      };
+      expect(shouldPersistedFieldBeIncluded.bind(context)('id', ['id'])).toBe(true);
+      expect(shouldPersistedFieldBeIncluded.bind(context)('name', ['id'])).toBe(false);
+    });
   });
 });

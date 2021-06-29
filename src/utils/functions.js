@@ -90,7 +90,7 @@ export function handleRouteChange(newRoute, oldRoute, limit) {
   }
 }
 
-export function shouldPersistedFieldBeChecked(columnKey, getColumnsFromQueryParams) {
+export function shouldPersistedFieldBeIncluded(columnKey, getColumnsFromQueryParams) {
   if (this.persistedFields[columnKey] && getColumnsFromQueryParams.length) {
     return getColumnsFromQueryParams.includes(columnKey);
   }
