@@ -181,11 +181,31 @@ export function handleFilterChange(filterType, value, limit) {
       offset = parseInt(filters.offset) || 1;
     }
 
-    const newData = this.model.getData({
-      ...filters,
-      offset: limit * (offset - 1),
-    });
-    window.localStorage.setItem('filters', filters);
+    const newData = this.model.getData(
+      JSON.stringify({
+        ...filters,
+        offset: limit * (offset - 1),
+      })
+    );
+    window.localStorage.setItem('filters', JSON.stringify(filters));
     this.updateData(newData);
+  }
+}
+
+export function getItemFromLocalStorage(key) {
+  try {
+    let keys = key.split('.');
+    let item = JSON.parse(window.localStorage.getItem(keys[0]));
+    keys = keys.slice(1);
+    for (const key of keys) {
+      item = item[key];
+      if (!item) {
+        return null;
+      }
+    }
+    return item;
+  } catch (err) {
+    console.error('Something went wrong: ', err);
+    return null;
   }
 }

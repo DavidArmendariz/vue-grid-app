@@ -50,7 +50,7 @@ export default class Deals extends BaseModel {
     }, []);
   }
 
-  getData(options = {}) {
+  getData(options) {
     this.setFetchOptions(options);
     this.setColumnsToDisplay();
 

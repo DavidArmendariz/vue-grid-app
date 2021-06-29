@@ -29,7 +29,7 @@ export default {
   components: {
     BaseButton,
   },
-  inject: ['columnsMap', 'persistedFields'],
+  inject: ['columnsMap', 'persistedFields', 'onFilterChange'],
   data() {
     return {
       showConfig: false,
@@ -65,10 +65,7 @@ export default {
     onSave() {
       const filteredColumns = this.columnsInfo.filter((column) => column.checked).map((column) => column.key);
       this.showConfig = false;
-      const existingQueryParams = this.$route.query;
-      this.$router.push({
-        query: { ...existingQueryParams, columns: encodeURIComponent(JSON.stringify(filteredColumns)) },
-      });
+      this.onFilterChange('columns', filteredColumns);
     },
   },
 };

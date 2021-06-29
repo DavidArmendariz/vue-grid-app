@@ -15,54 +15,30 @@ export default class BaseModel {
     }, {});
   }
 
-  setFetchOptions(options = {}) {
-    const { offset, columns, search, sort, uniqueValues, all, isExport } = options;
-
-    let processedOffset = 0;
-    let processedColumns = [];
-    let processedSearch = '';
-    let processedSort = [];
-    let processedUniqueValues = [];
-
-    if (offset) {
-      processedOffset = parseInt(offset);
-    }
-
-    if (columns) {
-      try {
-        processedColumns = JSON.parse(decodeURIComponent(columns));
-      } catch (err) {
-        console.error('Something went wrong when parsing columns fetch option: ', err);
-      }
-    }
-
-    if (search) {
-      processedSearch = decodeURIComponent(search);
-    }
-
-    if (sort) {
-      try {
-        processedSort = JSON.parse(decodeURIComponent(sort));
-      } catch (err) {
-        console.error('Something went wrong when parsing columns fetch option:', err);
-      }
-    }
-
-    if (uniqueValues) {
-      processedUniqueValues = JSON.parse(decodeURIComponent(uniqueValues));
-    }
-
-    const fetchOptions = {
-      offset: processedOffset,
-      columns: processedColumns,
-      search: processedSearch,
-      sort: processedSort,
-      uniqueValues: processedUniqueValues,
-      all: all === 'true',
-      isExport: isExport === 'true',
+  setFetchOptions(options) {
+    const defaultOptions = {
+      offset: 0,
+      columns: [],
+      search: '',
+      sort: [],
+      uniqueValues: [],
+      all: false,
+      isExport: false,
     };
-
-    this.fetchOptions = fetchOptions;
+    try {
+      const { offset, columns, search, sort, uniqueValues, all, isExport } = JSON.parse(options);
+      this.fetchOptions = {
+        offset: offset || defaultOptions.offset,
+        columns: columns || defaultOptions.columns,
+        search: search || defaultOptions.search,
+        sort: sort || defaultOptions.sort,
+        uniqueValues: uniqueValues || defaultOptions.uniqueValues,
+        all: all || defaultOptions.all,
+        isExport: isExport || defaultOptions.isExport,
+      };
+    } catch {
+      this.fetchOptions = defaultOptions;
+    }
   }
 
   buildHashMap(key, idKey) {
