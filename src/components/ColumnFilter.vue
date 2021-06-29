@@ -47,7 +47,7 @@ export default {
   },
   computed: {
     isColumnAlphabeticallySortable() {
-      return this.columnsTypes[this.columnKey] === String;
+      return this.columnsTypes[this.columnKey] === String && this.uniqueValues.length > 1;
     },
     placeholder() {
       return `Filter ${this.columnName}`;
@@ -60,16 +60,7 @@ export default {
   },
   methods: {
     getUniqueValues() {
-      const uniqueValues = this.model.getUniqueValuesForColumn(this.columnKey, { all: 'true' });
-      return uniqueValues.reduce((result, currentValue) => {
-        const entry = {
-          value: currentValue,
-          name: currentValue || '(blank)',
-          checked: true,
-        };
-        result.push(entry);
-        return result;
-      }, []);
+      return Utils.getUniqueValues.bind(this)();
     },
     onSortAlphabetically(order) {
       const currentSort = Utils.getCurrentSort.bind(this)();

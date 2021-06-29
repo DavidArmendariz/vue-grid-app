@@ -136,3 +136,25 @@ export function processRow(columnKey, row, ellipsis = false) {
 
   return rowContent;
 }
+
+export function getUniqueValues() {
+  const uniqueValues = this.model.getUniqueValuesForColumn(this.columnKey, { all: 'true' });
+  const columnsTypes = this.columnsTypes;
+  return uniqueValues.reduce((result, currentValue) => {
+    let name = currentValue || '(blank)';
+
+    switch (columnsTypes[this.columnKey]) {
+      case Array:
+        name = currentValue.join(', ');
+        break;
+    }
+
+    const entry = {
+      value: currentValue,
+      checked: true,
+      name,
+    };
+    result.push(entry);
+    return result;
+  }, []);
+}
