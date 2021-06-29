@@ -15,10 +15,10 @@ export default {
       filter: decodeURIComponent(this.$route.query.search || ''),
     };
   },
+  inject: ['onFilterChange'],
   methods: {
     onSearch() {
-      const encodedSearchString = encodeURIComponent(this.filter);
-      this.$router.push({ query: { search: encodedSearchString } });
+      this.onFilterChange('search', this.filter);
     },
   },
 };

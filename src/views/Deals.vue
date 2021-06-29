@@ -62,6 +62,7 @@ export default {
       persistedFields: {
         dealId: true,
       },
+      onFilterChange: this.onFilterChange,
     };
   },
   mounted() {
@@ -88,6 +89,9 @@ export default {
           ),
         },
       };
+    },
+    onFilterChange(filterType, value) {
+      Utils.handleFilterChange.bind(this)(filterType, value);
     },
   },
   computed: {

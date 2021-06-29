@@ -158,3 +158,34 @@ export function getUniqueValues() {
     return result;
   }, []);
 }
+
+export function handleFilterChange(filterType, value, limit) {
+  let filters = window.localStorage.getItem('filters');
+
+  try {
+    filters = JSON.parse(filters) || {};
+  } catch {
+    filters = {};
+  }
+
+  const storedValue = filters[filterType];
+  const filterChanged = storedValue !== value;
+
+  if (filterChanged) {
+    filters[filterType] = value;
+    let offset;
+
+    if (filterType === 'search') {
+      offset = 1;
+    } else {
+      offset = parseInt(filters.offset) || 1;
+    }
+
+    const newData = this.model.getData({
+      ...filters,
+      offset: limit * (offset - 1),
+    });
+    window.localStorage.setItem('filters', filters);
+    this.updateData(newData);
+  }
+}
