@@ -118,6 +118,9 @@ export default {
   color: #5c99b7;
   padding: 1rem;
   position: relative;
+  &:nth-last-child(-n + 2) > div {
+    right: 0;
+  }
 }
 
 .header-message {
