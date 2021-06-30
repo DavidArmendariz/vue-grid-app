@@ -96,12 +96,7 @@ export default {
       this.onFilterChange('uniqueValues', []);
       this.onClose();
     },
-    onChange(event) {
-      // If a column has all values as "(blank)", then removing it would get rid of the table
-      if ((event.target._value === null || event.target._value === undefined) && this.uniqueValues.length === 1) {
-        return;
-      }
-
+    onChange() {
       const checkedValues = this.uniqueValues.filter((entry) => entry.checked).map((entry) => entry.value);
       const newUniqueValuesFilter = Utils.getItemFromLocalStorage(
         `filters${this.uniqueLocalStorageKey}.uniqueValues`,
