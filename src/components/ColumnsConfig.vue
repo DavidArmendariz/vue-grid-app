@@ -44,11 +44,10 @@ export default {
   methods: {
     updateColumnsInfo() {
       const columnsFromLocalStorage = Utils.getItemFromLocalStorage(`filters${this.uniqueLocalStorageKey}.columns`, []);
-
       return Object.keys(this.columnsMap).map((columnKey) => ({
         key: columnKey,
         name: this.columnsMap[columnKey],
-        checked: columnsFromLocalStorage.includes(columnKey),
+        checked: Utils.shouldPersistedFieldBeIncluded.bind(this)(columnKey, columnsFromLocalStorage),
       }));
     },
     onReset() {
