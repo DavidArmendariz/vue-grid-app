@@ -12,7 +12,7 @@ export default class Documents extends BaseModel {
   reduceDocumentsData() {
     const fetchedData = this.getMainTableData();
     return fetchedData.reduce((processedData, row) => {
-      const processedRow = {
+      const newRow = {
         ...(this.columns.id && { id: row.id }),
         ...(this.columns.dealId && { dealId: row.deal_id }),
         ...(this.columns.documentName && { documentName: row.doc_name }),
@@ -22,6 +22,7 @@ export default class Documents extends BaseModel {
         ...(this.columns.note && { note: row.source_file?.note }), // email note or source file note?
         ...(this.columns.filePath && { filePath: this.getFilePath(row) }), // folder path + file name
       };
+      const processedRow = this.processRow(newRow);
       processedData.push(processedRow);
       return processedData;
     }, []);
