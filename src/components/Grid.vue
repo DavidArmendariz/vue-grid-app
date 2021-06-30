@@ -1,9 +1,9 @@
 <template>
-  <div class="grid">
+  <div class="table-wrapper">
     <div v-if="showEmptyMessage">
       No data to display
     </div>
-    <table v-else>
+    <table class="table" v-else>
       <thead>
         <tr>
           <th class="header"></th>
@@ -109,10 +109,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.grid {
+.table-wrapper {
   overflow-x: auto;
   display: flex;
   justify-content: center;
+  height: 60vh;
+  border-radius: 10px;
+}
+
+.table {
+  border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .header {
@@ -138,11 +145,6 @@ export default {
   &:nth-child(even) {
     background-color: #f7f4f4;
   }
-}
-
-table {
-  border-collapse: collapse;
-  table-layout: fixed;
 }
 
 .cell {
