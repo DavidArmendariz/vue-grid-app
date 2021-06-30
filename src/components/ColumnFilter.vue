@@ -1,9 +1,13 @@
 <template>
   <div @click.stop class="column-filter">
     <div class="column-name">{{ columnName }}</div>
-    <div v-if="isColumnAlphabeticallySortable" class="alphabetical-sorting">
+    <div v-if="isColumnAlphabeticallySortable" class="sorting">
       <div @click="onSort('asc')">Sort A to Z</div>
       <div @click="onSort('desc')">Sort Z to A</div>
+    </div>
+    <div v-if="isColumnSortable" class="sorting">
+      <div @click="onSort('asc')">Sort ascending</div>
+      <div @click="onSort('desc')">Sort descending</div>
     </div>
     <input class="filter-search-bar" type="text" :placeholder="placeholder" v-model="searchFilter" />
     <div class="filters-options">
@@ -48,6 +52,9 @@ export default {
   computed: {
     isColumnAlphabeticallySortable() {
       return this.columnsTypes[this.columnKey] === String && this.uniqueValues.length > 1;
+    },
+    isColumnSortable() {
+      return [Number, Date].includes(this.columnsTypes[this.columnKey]) && this.uniqueValues.length > 1;
     },
     placeholder() {
       return `Filter ${this.columnName}`;
@@ -129,10 +136,9 @@ export default {
   display: flex;
 }
 
-.alphabetical-sorting {
-  div {
-    padding: 1rem 0;
-  }
+.sorting div {
+  text-align: left;
+  margin: 8px 0;
 }
 
 .filters-options {

@@ -157,7 +157,11 @@ export default class BaseModel {
         }
 
         if (this.columnsTypes[key] === Number) {
-          result = result || (a - b) * multiplier;
+          result = result || (a[key] - b[key]) * multiplier;
+        }
+
+        if (this.columnsTypes[key] === Date) {
+          result = result || (Date.parse(a[key]) - Date.parse(b[key])) * multiplier;
         }
       });
       return result;
