@@ -32,7 +32,7 @@ import * as Utils from '../utils';
 
 export default {
   props: ['columnName', 'columnKey', 'onClose'],
-  inject: ['columnsTypes', 'uniqueLocalStorageKey', 'onFilterChange'],
+  inject: ['columnsTypes', 'uniqueLocalStorageKey', 'onFilterChange', 'model'],
   components: {
     BaseButton,
   },
@@ -81,7 +81,11 @@ export default {
       const sort = Utils.getItemFromLocalStorage(`filters${this.uniqueLocalStorageKey}.sort`, []).filter(
         (entry) => entry.key !== this.columnKey
       );
+      const uniqueValues = Utils.getUniqueValues.bind(this)();
+      this.uniqueValues = uniqueValues.map((entry) => ({ ...entry, checked: true }));
+      Utils.deleteUniqueValuesFromLocalStorage.bind(this)();
       this.onFilterChange('sort', sort);
+      this.onFilterChange('uniqueValues', []);
       this.onClose();
     },
     onChange(event) {
@@ -91,13 +95,13 @@ export default {
       }
 
       const checkedValues = this.uniqueValues.filter((entry) => entry.checked).map((entry) => entry.value);
-      const existingUniqueValuesFilter = Utils.getItemFromLocalStorage(
-        `filters${this.uniqueLocalStorageKey}`,
+      const newUniqueValuesFilter = Utils.getItemFromLocalStorage(
+        `filters${this.uniqueLocalStorageKey}.uniqueValues`,
         []
       ).filter((entry) => entry.key !== this.columnKey);
-      existingUniqueValuesFilter.push({ key: this.columnKey, values: checkedValues });
-      this.onFilterChange('uniqueValues', existingUniqueValuesFilter);
-      Utils.setUniqueValuesToLocalStorage(this.uniqueValues);
+      newUniqueValuesFilter.push({ key: this.columnKey, values: checkedValues });
+      this.onFilterChange('uniqueValues', newUniqueValuesFilter);
+      Utils.setUniqueValuesToLocalStorage.bind(this)();
     },
   },
 };

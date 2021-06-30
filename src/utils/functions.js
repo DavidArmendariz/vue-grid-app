@@ -103,6 +103,15 @@ export function processRow(columnKey, row, ellipsis = false) {
 }
 
 export function getUniqueValues() {
+  // First we check if unique values are in local storage
+  const uniqueValuesFromLocalStorage = getItemFromLocalStorage(
+    `uniqueValues${this.uniqueLocalStorageKey}.${this.columnKey}`
+  );
+
+  if (uniqueValuesFromLocalStorage) {
+    return uniqueValuesFromLocalStorage;
+  }
+
   const existingFilters = getItemFromLocalStorage(`filters${this.uniqueLocalStorageKey}`, {});
   const filters = JSON.stringify({ ...existingFilters, all: true });
   const uniqueValues = this.model.getUniqueValuesForColumn(this.columnKey, filters);
@@ -118,7 +127,7 @@ export function getUniqueValues() {
     }
 
     const entry = {
-      value: currentValue,
+      value: currentValue || null,
       checked: true,
       name,
     };
@@ -183,5 +192,11 @@ export function getDataFromModel(filters, limit = LIMIT) {
 export function setUniqueValuesToLocalStorage() {
   const uniqueValues = getItemFromLocalStorage(`uniqueValues${this.uniqueLocalStorageKey}`, {});
   uniqueValues[this.columnKey] = this.uniqueValues;
-  window.localStorage.setItem(`uniqueValues${this.uniqueLocalStorageKey}`, uniqueValues);
+  window.localStorage.setItem(`uniqueValues${this.uniqueLocalStorageKey}`, JSON.stringify(uniqueValues));
+}
+
+export function deleteUniqueValuesFromLocalStorage() {
+  const uniqueValues = getItemFromLocalStorage(`uniqueValues${this.uniqueLocalStorageKey}`, {});
+  delete uniqueValues[this.columnKey];
+  window.localStorage.setItem(`uniqueValues${this.uniqueLocalStorageKey}`, JSON.stringify(uniqueValues));
 }
