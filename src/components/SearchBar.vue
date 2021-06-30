@@ -2,7 +2,7 @@
   <div class="search-deals">
     <slot name="title"></slot>
     <div class="search-bar-container">
-      <input type="text" placeholder="Search" v-model="filter" @keyup.enter="onSearch" />
+      <input type="text" placeholder="Search" v-model.trim="filter" @keyup.enter="onSearch" />
       <custom-icon class="search-icon" icon="search" @click="onSearch" />
     </div>
   </div>
@@ -16,7 +16,16 @@ export default {
   data() {
     return {
       filter: Utils.getItemFromLocalStorage(`filters${this.uniqueLocalStorageKey}.search`, ''),
+      debounce: null,
     };
+  },
+  watch: {
+    filter() {
+      clearTimeout(this.debounce);
+      this.debounce = setTimeout(() => {
+        this.onFilterChange('search', this.filter);
+      }, 500);
+    },
   },
   methods: {
     onSearch() {
