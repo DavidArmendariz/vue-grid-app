@@ -121,6 +121,7 @@ export default {
   position: absolute;
   padding: 1rem;
   z-index: 1;
+  top: 100%;
   float: left;
   display: flex;
   flex-direction: column;

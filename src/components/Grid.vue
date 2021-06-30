@@ -6,8 +6,8 @@
     <table class="table" v-else>
       <thead>
         <tr>
-          <th class="header"></th>
-          <th class="header" v-for="column in columns" :key="column.key" @click="onHeaderClick(column.key)">
+          <th class="header sticky"></th>
+          <th class="header sticky" v-for="column in columns" :key="column.key" @click="onHeaderClick(column.key)">
             {{ column.name }}
             <column-filter
               v-if="isColumnActive(column.key)"
@@ -17,7 +17,7 @@
               :filteredData="filteredData"
             />
           </th>
-          <th class="header" v-if="hasLinkSlot"></th>
+          <th class="header sticky" v-if="hasLinkSlot"></th>
         </tr>
         <tr>
           <th class="header-message" colspan="100%"><slot name="headerMessage" /></th>
@@ -128,6 +128,11 @@ export default {
   position: relative;
   &:nth-last-child(-n + 2) > div {
     right: 0;
+  }
+  &.sticky {
+    position: sticky;
+    z-index: 1;
+    top: 0;
   }
 }
 
