@@ -110,16 +110,14 @@ export default {
 
 <style lang="scss" scoped>
 .table-wrapper {
-  overflow-x: auto;
-  display: flex;
-  justify-content: center;
   height: 60vh;
-  border-radius: 10px;
+  overflow: auto;
 }
 
 .table {
   border-collapse: collapse;
   table-layout: fixed;
+  margin: auto;
 }
 
 .header {

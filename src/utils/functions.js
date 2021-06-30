@@ -103,12 +103,19 @@ export function getUniqueValues() {
   const columnsTypes = this.columnsTypes;
 
   return uniqueValues.reduce((result, currentValue) => {
-    let name = currentValue || '(blank)';
+    let name = currentValue;
 
-    switch (columnsTypes[this.columnKey]) {
-      case Array:
-        name = currentValue.join(', ');
-        break;
+    if (name) {
+      switch (columnsTypes[this.columnKey]) {
+        case Array:
+          name = name.join(', ');
+          break;
+        case Number:
+          name = name.toString();
+          break;
+      }
+    } else {
+      name = '(blank)';
     }
 
     const entry = {
