@@ -78,7 +78,7 @@ export default {
       return Utils.getColumnsShown.bind(this)();
     },
     headerMessage() {
-      return `Showing ${this.totalRows} documents.`;
+      return `Showing ${this.totalRows} document${this.totalRows === 1 ? '' : 's'}.`;
     },
   },
 };

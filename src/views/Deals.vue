@@ -102,7 +102,7 @@ export default {
       return Utils.getColumnsShown.bind(this)();
     },
     headerMessage() {
-      return `Showing ${this.totalRows} deals.`;
+      return `Showing ${this.totalRows} deal${this.totalRows === 1 ? '' : 's'}.`;
     },
   },
 };
