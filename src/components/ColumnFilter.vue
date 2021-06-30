@@ -24,8 +24,8 @@
       </div>
     </div>
     <div class="buttons">
-      <base-button @click.stop="onClearFilter">Clear Filter</base-button>
-      <base-button @click.stop="onClose">Close</base-button>
+      <base-button class="button clear-filter" @click.stop="onClearFilter">Clear Filter</base-button>
+      <base-button class="button" @click.stop="onClose">Close</base-button>
     </div>
   </div>
 </template>
@@ -130,15 +130,19 @@ export default {
 .column-name {
   align-self: center;
   color: black;
+  font-size: 0.9rem;
 }
 
 .buttons {
   display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .sorting div {
   text-align: left;
   margin: 8px 0;
+  font-size: 0.85rem;
 }
 
 .filters-options {
@@ -146,9 +150,23 @@ export default {
   max-height: 200px;
   width: 100%;
   overflow-y: auto;
+  font-size: 0.85rem;
 }
 
 .filter-search-bar {
   margin: 1rem 0;
+}
+
+.button {
+  padding: 4px;
+  color: black;
+  margin: 10px 0;
+  background-color: white;
+  border: 1px solid black;
+  &.clear-filter {
+    background-color: #f0ad4e;
+    color: white;
+    border: none;
+  }
 }
 </style>

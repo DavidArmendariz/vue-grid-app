@@ -12,9 +12,9 @@
         </div>
       </div>
       <div class="filters-buttons">
-        <base-button @click="onSave">Save</base-button>
-        <base-button @click="onClickConfig">Cancel</base-button>
-        <base-button @click="onReset">Reset</base-button>
+        <base-button class="button" @click="onSave">Save</base-button>
+        <base-button class="button" @click="onClickConfig">Cancel</base-button>
+        <base-button class="button" @click="onReset">Reset</base-button>
       </div>
     </div>
   </div>
@@ -97,5 +97,12 @@ export default {
 
 .option {
   padding: 4px 0;
+}
+
+.button {
+  padding: 4px 16px;
+  color: white;
+  background-color: #5c99b7;
+  border: none;
 }
 </style>
