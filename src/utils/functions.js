@@ -52,21 +52,6 @@ export function getPaginationNumber(maxPagination) {
   return paginationNumbers;
 }
 
-export function handleRouteChange(newRoute, oldRoute, limit) {
-  const offsetChanged = newRoute.query.offset !== oldRoute.query.offset;
-
-  if (offsetChanged) {
-    const offset = parseInt(newRoute.query.offset) || 1;
-    const filters = getItemFromLocalStorage(`filters${this.uniqueLocalStorageKey}`, {});
-    const newData = this.model.getData({
-      ...filters,
-      offset: limit * (offset - 1),
-    });
-    this.updateData(newData);
-    return;
-  }
-}
-
 export function shouldPersistedFieldBeIncluded(columnKey, storedColumns) {
   if (this.persistedFields[columnKey] && storedColumns.length) {
     return storedColumns.includes(columnKey);

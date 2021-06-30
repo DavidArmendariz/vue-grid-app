@@ -105,12 +105,6 @@ export default {
       return `Showing ${this.totalRows} deals.`;
     },
   },
-  watch: {
-    $route(newRoute, oldRoute) {
-      // TODO: Change this for offset only and probably search as well?
-      Utils.handleRouteChange.bind(this)(newRoute, oldRoute, Utils.LIMIT);
-    },
-  },
 };
 </script>
 

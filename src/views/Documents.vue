@@ -81,12 +81,6 @@ export default {
       return `Showing ${this.totalRows} documents.`;
     },
   },
-  watch: {
-    $route(newRoute, oldRoute) {
-      // TODO: Change this for offset only and probably search as well?
-      Utils.handleRouteChange.bind(this)(newRoute, oldRoute, Utils.LIMIT);
-    },
-  },
 };
 </script>
 

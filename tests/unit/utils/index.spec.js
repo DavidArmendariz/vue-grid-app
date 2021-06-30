@@ -4,7 +4,6 @@ import {
   getCSVContent,
   getItemFromLocalStorage,
   getPaginationNumber,
-  handleRouteChange,
   joinArray,
   processRow,
   shouldPersistedFieldBeIncluded,
@@ -84,60 +83,6 @@ describe('getPaginationNumber', () => {
     };
     const result = getPaginationNumber.bind(context)(TEST_MAX_PAGINATION_NUMBER);
     expect(result).toEqual([1, '...', 48, 49, 50, 51, 52, '...', 100]);
-  });
-});
-
-describe('handleRouteChange', () => {
-  let context;
-  let testLimit = 10;
-  let spyOnGetData;
-  let spyOnUpdateData;
-
-  beforeEach(() => {
-    context = {
-      model: {
-        getData: jest.fn(),
-      },
-      updateData: jest.fn(),
-    };
-    spyOnGetData = jest.spyOn(context.model, 'getData');
-    spyOnUpdateData = jest.spyOn(context, 'updateData');
-  });
-
-  it('should call getData with the correct arguments if offset changed', () => {
-    const newRoute = {
-      query: {
-        offset: '2',
-      },
-    };
-    const oldRoute = {
-      query: {
-        offset: '1',
-      },
-    };
-    handleRouteChange.bind(context)(newRoute, oldRoute, testLimit);
-    expect(spyOnGetData).toHaveBeenCalledTimes(1);
-    expect(spyOnUpdateData).toHaveBeenCalledTimes(1);
-    expect(spyOnGetData).toHaveBeenCalledWith({
-      ...newRoute.query,
-      offset: 10,
-    });
-  });
-
-  it('should not do anything if query params do not change', () => {
-    const newRoute = {
-      query: {
-        search: 'test1',
-      },
-    };
-    const oldRoute = {
-      query: {
-        search: 'test1',
-      },
-    };
-    handleRouteChange.bind(context)(newRoute, oldRoute, testLimit);
-    expect(spyOnGetData).not.toHaveBeenCalled();
-    expect(spyOnUpdateData).not.toHaveBeenCalled();
   });
 });
 
