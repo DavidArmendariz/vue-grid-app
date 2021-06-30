@@ -52,7 +52,16 @@ export default class BaseModel {
 
   getUniqueValuesForColumn(columnKey, filters) {
     const { data } = this.getData(filters);
-    return [...new Set(data.map((row) => row[columnKey]))];
+    return [
+      ...new Set(
+        data.map((row) => {
+          if (this.columnsTypes[columnKey] === Array) {
+            return row[columnKey]?.join(', ');
+          }
+          return row[columnKey];
+        })
+      ),
+    ];
   }
 
   getMainTableData() {
@@ -175,7 +184,7 @@ export default class BaseModel {
     return data.filter((row) => {
       let result = true;
       Object.keys(uniqueValuesMap).forEach((columnKey) => {
-        const dataValue = row[columnKey];
+        const dataValue = this.columnsTypes[columnKey] === Array ? row[columnKey].join(', ') : row[columnKey];
         result = result && uniqueValuesMap[columnKey] && uniqueValuesMap[columnKey][dataValue];
       });
       return result;

@@ -100,23 +100,9 @@ export function getUniqueValues() {
   const existingFilters = getItemFromLocalStorage(`filters${this.uniqueLocalStorageKey}`, {});
   const filters = JSON.stringify({ ...existingFilters, all: true });
   const uniqueValues = this.model.getUniqueValuesForColumn(this.columnKey, filters);
-  const columnsTypes = this.columnsTypes;
 
   return uniqueValues.reduce((result, currentValue) => {
-    let name = currentValue;
-
-    if (name) {
-      switch (columnsTypes[this.columnKey]) {
-        case Array:
-          name = name.join(', ');
-          break;
-        case Number:
-          name = name.toString();
-          break;
-      }
-    } else {
-      name = '(blank)';
-    }
+    const name = currentValue ? currentValue.toString() : '(blank)';
 
     const entry = {
       value: currentValue || null,
