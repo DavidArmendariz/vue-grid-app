@@ -59,9 +59,27 @@ export default {
     };
   },
   mounted() {
-    const filters = Utils.getItemFromLocalStorage(`filters${this.uniqueLocalStorageKey}`, {});
-    const response = Utils.getDataFromModel.bind(this)(filters);
-    this.updateData(response);
+    if (this.$route.query.dealId) {
+      const value = this.$route.query.dealId;
+      const filters = { uniqueValues: [{ key: 'dealId', values: [parseInt(value)] }] };
+      const response = Utils.getDataFromModel.bind(this)(filters);
+      this.updateData(response);
+      const uniqueDealIds = this.model.getUniqueValuesForColumn('dealId', JSON.stringify({ all: true }));
+      const uniqueValues = uniqueDealIds.map((dealId) => ({
+        value: dealId,
+        name: value.toString(),
+        checked: parseInt(value) === dealId,
+      }));
+      window.localStorage.setItem(`filters${this.uniqueLocalStorageKey}`, JSON.stringify(filters));
+      window.localStorage.setItem(
+        `uniqueValues${this.uniqueLocalStorageKey}`,
+        JSON.stringify({ dealId: uniqueValues })
+      );
+    } else {
+      const filters = Utils.getItemFromLocalStorage(`filters${this.uniqueLocalStorageKey}`, {});
+      const response = Utils.getDataFromModel.bind(this)(filters);
+      this.updateData(response);
+    }
   },
   methods: {
     updateData({ data, paginationCount, total }) {
