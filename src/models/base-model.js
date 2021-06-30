@@ -121,7 +121,12 @@ export default class BaseModel {
   getPaginationCount(data) {
     const total = this.getTotal(data);
     const division = Math.ceil(total / this.limit);
-    return total && total % this.limit === 0 ? division - 1 : division;
+
+    if (total === 0) {
+      return 0;
+    }
+
+    return division;
   }
 
   setColumnsToDisplay() {
@@ -197,5 +202,16 @@ export default class BaseModel {
       });
       return result;
     });
+  }
+
+  processRow(row) {
+    return Object.keys(row).reduce((result, key) => {
+      if (row[key] === undefined) {
+        result[key] = null;
+      } else {
+        result[key] = row[key];
+      }
+      return result;
+    }, {});
   }
 }

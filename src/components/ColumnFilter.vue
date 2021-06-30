@@ -10,7 +10,7 @@
       <div @click="onSort('desc')">Sort descending</div>
     </div>
     <input class="filter-search-bar" type="text" :placeholder="placeholder" v-model="searchFilter" />
-    <div class="filters-options">
+    <div class="filters-options" ref="inputs">
       <div v-for="entry in uniqueValuesToRender" :key="entry.name">
         <input
           type="checkbox"
@@ -19,6 +19,7 @@
           :value="entry.value"
           v-model="entry.checked"
           @change="onChange"
+          :disabled="checkDisable(entry.checked)"
         />
         <label :for="entry.name">{{ entry.name }}</label>
       </div>
@@ -109,6 +110,10 @@ export default {
       newUniqueValuesFilter.push({ key: this.columnKey, values: checkedValues });
       this.onFilterChange('uniqueValues', newUniqueValuesFilter);
       Utils.setUniqueValuesToLocalStorage.bind(this)();
+    },
+    checkDisable(checked) {
+      const checkedNumber = this.$refs.inputs.querySelectorAll('input:checked').length;
+      return checkedNumber === 1 && checked;
     },
   },
 };

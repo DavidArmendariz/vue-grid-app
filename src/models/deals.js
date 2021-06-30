@@ -25,7 +25,7 @@ export default class Deals extends BaseModel {
         shouldIncludeDealId = this.columns.dealId;
       }
 
-      const processedRow = {
+      const newRow = {
         ...(this.columns.id && { id: row.Id }),
         ...(this.columns.issuer && { issuer: this.clientIssuers[row.IssuerId]?.IssuerName?.trim() }),
         ...(this.columns.dealName && { dealName: row.DealName?.trim() }),
@@ -45,6 +45,7 @@ export default class Deals extends BaseModel {
         ...(this.columns.customField && { customField: row.ClientCustomField }),
         ...(shouldIncludeDealId && { dealId: row.DealId }),
       };
+      const processedRow = this.processRow(newRow);
       processedData.push(processedRow);
       return processedData;
     }, []);
