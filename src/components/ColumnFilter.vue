@@ -51,7 +51,7 @@ export default {
   },
   computed: {
     isColumnAlphabeticallySortable() {
-      return this.columnsTypes[this.columnKey] === String && this.uniqueValues.length > 1;
+      return [String, Array].includes(this.columnsTypes[this.columnKey]) && this.uniqueValues.length > 1;
     },
     isColumnSortable() {
       return [Number, Date].includes(this.columnsTypes[this.columnKey]) && this.uniqueValues.length > 1;

@@ -148,20 +148,24 @@ export default class BaseModel {
 
     return data.sort((a, b) => {
       let result;
+
       sort.forEach((column) => {
         const { key, order } = column;
         let multiplier = order.toLowerCase() === 'asc' ? 1 : -1;
 
-        if (this.columnsTypes[key] === String) {
-          result = result || (a[key] || '').localeCompare(b[key] || '') * multiplier;
-        }
-
-        if (this.columnsTypes[key] === Number) {
-          result = result || (a[key] - b[key]) * multiplier;
-        }
-
-        if (this.columnsTypes[key] === Date) {
-          result = result || (Date.parse(a[key]) - Date.parse(b[key])) * multiplier;
+        switch (this.columnsTypes[key]) {
+          case String:
+            result = result || (a[key] || '').localeCompare(b[key] || '') * multiplier;
+            break;
+          case Number:
+            result = result || (a[key] - b[key]) * multiplier;
+            break;
+          case Date:
+            result = result || (Date.parse(a[key]) - Date.parse(b[key])) * multiplier;
+            break;
+          case Array:
+            result = result || (a[key] || []).join(', ').localeCompare((b[key] || []).join(', ')) * multiplier;
+            break;
         }
       });
       return result;
