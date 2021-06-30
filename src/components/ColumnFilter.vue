@@ -151,6 +151,10 @@ export default {
   width: 100%;
   overflow-y: auto;
   font-size: 0.85rem;
+  label,
+  input {
+    vertical-align: middle;
+  }
 }
 
 .filter-search-bar {
