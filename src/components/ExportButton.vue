@@ -11,13 +11,13 @@ import * as Utils from '../utils';
 
 export default {
   props: ['fileName'],
-  inject: ['model'],
+  inject: ['model', 'uniqueLocalStorageKey'],
   components: {
     BaseButton,
   },
   methods: {
     exportData() {
-      const currentFilters = Utils.getItemFromLocalStorage('filters', {});
+      const currentFilters = Utils.getItemFromLocalStorage(`filters${this.uniqueLocalStorageKey}`, {});
       const { data } = this.model.getData(JSON.stringify({ ...currentFilters, all: true, isExport: true }));
       const encodedData = Utils.getCSVContent(data);
       const blob = new Blob([encodedData], { type: 'text/csv' });

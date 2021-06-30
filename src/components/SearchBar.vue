@@ -12,12 +12,12 @@
 import * as Utils from '../utils';
 
 export default {
+  inject: ['onFilterChange', 'uniqueLocalStorageKey'],
   data() {
     return {
-      filter: Utils.getItemFromLocalStorage('filters.search', ''),
+      filter: Utils.getItemFromLocalStorage(`filters${this.uniqueLocalStorageKey}.search`, ''),
     };
   },
-  inject: ['onFilterChange'],
   methods: {
     onSearch() {
       this.onFilterChange('search', this.filter);

@@ -29,7 +29,7 @@ export default {
   components: {
     BaseButton,
   },
-  inject: ['columnsMap', 'persistedFields', 'onFilterChange'],
+  inject: ['columnsMap', 'persistedFields', 'onFilterChange', 'uniqueLocalStorageKey'],
   data() {
     return {
       showConfig: false,
@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     updateColumnsInfo() {
-      const columnsFromLocalStorage = Utils.getItemFromLocalStorage('filters.columns', []);
+      const columnsFromLocalStorage = Utils.getItemFromLocalStorage(`filters${this.uniqueLocalStorageKey}.columns`, []);
 
       return Object.keys(this.columnsMap).map((columnKey) => ({
         key: columnKey,

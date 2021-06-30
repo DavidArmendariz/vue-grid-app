@@ -2,7 +2,6 @@ import {
   getColumnKeys,
   getColumnsShown,
   getCSVContent,
-  getFormattedFilters,
   getItemFromLocalStorage,
   getPaginationNumber,
   handleRouteChange,
@@ -228,19 +227,6 @@ describe('shouldPersistedFieldBeIncluded', () => {
       };
       expect(shouldPersistedFieldBeIncluded.bind(context)('id', ['id'])).toBe(true);
       expect(shouldPersistedFieldBeIncluded.bind(context)('name', ['id'])).toBe(false);
-    });
-  });
-});
-
-describe('getFormattedFilters', () => {
-  let testLimit = 10;
-
-  it('should return a stringified object of the filters and the offset based on the limit', () => {
-    const filters = { offset: 2, search: 'test' };
-    const result = getFormattedFilters(filters, testLimit);
-    expect(JSON.parse(result)).toEqual({
-      offset: 10,
-      search: 'test',
     });
   });
 });

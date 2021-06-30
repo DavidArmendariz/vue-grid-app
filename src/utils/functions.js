@@ -57,7 +57,7 @@ export function handleRouteChange(newRoute, oldRoute, limit) {
 
   if (offsetChanged) {
     const offset = parseInt(newRoute.query.offset) || 1;
-    const filters = getItemFromLocalStorage('filters', {});
+    const filters = getItemFromLocalStorage(`filters${this.uniqueLocalStorageKey}`, {});
     const newData = this.model.getData({
       ...filters,
       offset: limit * (offset - 1),
@@ -103,7 +103,7 @@ export function processRow(columnKey, row, ellipsis = false) {
 }
 
 export function getUniqueValues() {
-  const existingFilters = getItemFromLocalStorage('filters', {});
+  const existingFilters = getItemFromLocalStorage(`filters${this.uniqueLocalStorageKey}`, {});
   const filters = JSON.stringify({ ...existingFilters, all: true });
   const uniqueValues = this.model.getUniqueValuesForColumn(this.columnKey, filters);
   const columnsTypes = this.columnsTypes;
@@ -127,19 +127,12 @@ export function getUniqueValues() {
   }, []);
 }
 
-export function handleFilterChange(filterType, value, limit = LIMIT) {
-  let filters = window.localStorage.getItem('filters');
-
-  try {
-    filters = JSON.parse(filters) || {};
-  } catch {
-    filters = {};
-  }
-
+export function handleFilterChange(filterType, value) {
+  const filtersKey = `filters${this.uniqueLocalStorageKey}`;
+  const filters = getItemFromLocalStorage(filtersKey, {});
   const storedValue = filters[filterType];
-  const filterChanged = storedValue !== value;
 
-  if (filterChanged) {
+  if (storedValue !== value) {
     filters[filterType] = value;
 
     if (filterType === 'search') {
@@ -148,8 +141,8 @@ export function handleFilterChange(filterType, value, limit = LIMIT) {
       filters.offset = filters.offset || 1;
     }
 
-    const newData = this.model.getData(getFormattedFilters(filters, limit));
-    window.localStorage.setItem('filters', JSON.stringify(filters));
+    const newData = getDataFromModel.bind(this)(filters);
+    window.localStorage.setItem(filtersKey, JSON.stringify(filters));
     this.updateData(newData);
   }
 }
@@ -178,9 +171,17 @@ export function getItemFromLocalStorage(key, defaultValue = null) {
   }
 }
 
-export function getFormattedFilters(filters, limit = LIMIT) {
-  return JSON.stringify({
-    ...filters,
-    offset: limit * (filters.offset - 1),
-  });
+export function getDataFromModel(filters, limit = LIMIT) {
+  return this.model.getData(
+    JSON.stringify({
+      ...filters,
+      offset: limit * (filters.offset - 1),
+    })
+  );
+}
+
+export function setUniqueValuesToLocalStorage() {
+  const uniqueValues = getItemFromLocalStorage(`uniqueValues${this.uniqueLocalStorageKey}`, {});
+  uniqueValues[this.columnKey] = this.uniqueValues;
+  window.localStorage.setItem(`uniqueValues${this.uniqueLocalStorageKey}`, uniqueValues);
 }

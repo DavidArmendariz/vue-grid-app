@@ -18,12 +18,12 @@ import * as Utils from '../utils';
 
 export default {
   props: ['paginationCount'],
+  inject: ['onFilterChange', 'uniqueLocalStorageKey'],
   data() {
     return {
-      activePagination: Utils.getItemFromLocalStorage('filters.offset', 1),
+      activePagination: Utils.getItemFromLocalStorage(`filters${this.uniqueLocalStorageKey}.offset`, 1),
     };
   },
-  inject: ['onFilterChange'],
   methods: {
     onClickLeftArrow() {
       this.activePagination -= 1;
@@ -60,7 +60,7 @@ export default {
   },
   watch: {
     paginationCount() {
-      this.activePagination = Utils.getItemFromLocalStorage('filters.offset', 1);
+      this.activePagination = Utils.getItemFromLocalStorage(`filters${this.uniqueLocalStorageKey}.offset`, 1);
     },
   },
 };

@@ -49,6 +49,7 @@ export default {
   data() {
     return {
       model: new Deals(),
+      uniqueLocalStorageKey: 'Deals',
       filteredData: [],
       paginationCount: 0,
       totalRows: 0,
@@ -63,12 +64,12 @@ export default {
         dealId: true,
       },
       onFilterChange: this.onFilterChange,
+      uniqueLocalStorageKey: this.uniqueLocalStorageKey,
     };
   },
   mounted() {
-    let filters = Utils.getItemFromLocalStorage('filters', {});
-    filters = Utils.getFormattedFilters(filters);
-    const response = this.model.getData(filters);
+    const filters = Utils.getItemFromLocalStorage(`filters${this.uniqueLocalStorageKey}`, {});
+    const response = Utils.getDataFromModel.bind(this)(filters);
     this.updateData(response);
   },
   methods: {

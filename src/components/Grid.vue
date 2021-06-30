@@ -52,7 +52,7 @@ export default {
     ColumnFilter,
   },
   props: ['filteredData', 'columnsShown'],
-  inject: ['columnsTypes', 'columnsMap', 'persistedFields'],
+  inject: ['columnsTypes', 'columnsMap', 'persistedFields', 'uniqueLocalStorageKey'],
   data() {
     return {
       activeColumnKey: null,
@@ -61,7 +61,10 @@ export default {
   computed: {
     columnKeys() {
       if (this.filteredData.length) {
-        const columnsFromLocalStorage = Utils.getItemFromLocalStorage('filters.columns', []);
+        const columnsFromLocalStorage = Utils.getItemFromLocalStorage(
+          `filters${this.uniqueLocalStorageKey}.columns`,
+          []
+        );
         return Utils.getColumnKeys(this.filteredData).filter((columnKey) =>
           Utils.shouldPersistedFieldBeIncluded.bind(this)(columnKey, columnsFromLocalStorage)
         );

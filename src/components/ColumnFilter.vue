@@ -32,7 +32,7 @@ import * as Utils from '../utils';
 
 export default {
   props: ['columnName', 'columnKey', 'onClose'],
-  inject: ['columnsTypes', 'model', 'onFilterChange'],
+  inject: ['columnsTypes', 'uniqueLocalStorageKey', 'onFilterChange'],
   components: {
     BaseButton,
   },
@@ -70,32 +70,34 @@ export default {
       return Utils.getUniqueValues.bind(this)();
     },
     onSort(order) {
-      const sort = Utils.getItemFromLocalStorage('filters.sort', []).filter((entry) => entry.key !== this.columnKey);
+      const sort = Utils.getItemFromLocalStorage(`filters${this.uniqueLocalStorageKey}.sort`, []).filter(
+        (entry) => entry.key !== this.columnKey
+      );
       sort.push({ key: this.columnKey, order });
       this.onFilterChange('sort', sort);
       this.onClose();
     },
     onClearFilter() {
-      const sort = Utils.getItemFromLocalStorage('filters.sort', []).filter((entry) => entry.key !== this.columnKey);
+      const sort = Utils.getItemFromLocalStorage(`filters${this.uniqueLocalStorageKey}.sort`, []).filter(
+        (entry) => entry.key !== this.columnKey
+      );
       this.onFilterChange('sort', sort);
       this.onClose();
     },
     onChange(event) {
+      // If a column has all values as "(blank)", then removing it would get rid of the table
       if ((event.target._value === null || event.target._value === undefined) && this.uniqueValues.length === 1) {
         return;
       }
-      const checkedValues = this.uniqueValues.filter((entry) => entry.checked).map((entry) => entry.value || null);
-      const data = { key: this.columnKey, values: checkedValues };
-      let existingUniqueValues;
 
-      try {
-        existingUniqueValues = JSON.parse(decodeURIComponent(this.$route.query.uniqueValues));
-      } catch {
-        existingUniqueValues = [];
-      }
-
-      const encodedData = encodeURIComponent(JSON.stringify([...existingUniqueValues, data]));
-      this.$router.push({ query: { ...this.$route.query, uniqueValues: encodedData } });
+      const checkedValues = this.uniqueValues.filter((entry) => entry.checked).map((entry) => entry.value);
+      const existingUniqueValuesFilter = Utils.getItemFromLocalStorage(
+        `filters${this.uniqueLocalStorageKey}`,
+        []
+      ).filter((entry) => entry.key !== this.columnKey);
+      existingUniqueValuesFilter.push({ key: this.columnKey, values: checkedValues });
+      this.onFilterChange('uniqueValues', existingUniqueValuesFilter);
+      Utils.setUniqueValuesToLocalStorage(this.uniqueValues);
     },
   },
 };

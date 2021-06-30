@@ -42,6 +42,7 @@ export default {
   data() {
     return {
       model: new Documents(),
+      uniqueLocalStorageKey: 'Documents',
       filteredData: [],
       paginationCount: 0,
       totalRows: 0,
@@ -54,12 +55,12 @@ export default {
       columnsTypes: Utils.DOCS_COLUMNS_TYPES,
       persistedFields: {},
       onFilterChange: this.onFilterChange,
+      uniqueLocalStorageKey: this.uniqueLocalStorageKey,
     };
   },
   mounted() {
-    let filters = Utils.getItemFromLocalStorage('filters', {});
-    filters = Utils.getFormattedFilters(filters);
-    const response = this.model.getData(filters);
+    const filters = Utils.getItemFromLocalStorage(`filters${this.uniqueLocalStorageKey}`, {});
+    const response = Utils.getDataFromModel.bind(this)(filters);
     this.updateData(response);
   },
   methods: {
