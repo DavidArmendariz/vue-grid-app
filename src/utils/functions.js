@@ -115,6 +115,14 @@ export function getUniqueValues() {
 }
 
 export function handleFilterChange(filterType, value) {
+  if (filterType === 'reset') {
+    window.localStorage.removeItem(`filters${this.uniqueLocalStorageKey}`);
+    window.localStorage.removeItem(`uniqueValues${this.uniqueLocalStorageKey}`);
+    const newData = getDataFromModel.bind(this)({});
+    this.updateData(newData);
+    return;
+  }
+
   const filtersKey = `filters${this.uniqueLocalStorageKey}`;
   const filters = getItemFromLocalStorage(filtersKey, {});
   const storedValue = filters[filterType];

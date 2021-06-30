@@ -7,6 +7,7 @@
         </template>
       </search-bar>
       <div class="buttons">
+        <reset-all-filters />
         <columns-config :columnsShown="columnsShown" />
         <export-button fileName="deals_data.csv" />
       </div>
@@ -36,6 +37,7 @@ import ExportButton from '../components/ExportButton.vue';
 import ColumnsConfig from '../components/ColumnsConfig.vue';
 import Grid from '../components/Grid.vue';
 import Pagination from '../components/Pagination.vue';
+import ResetAllFilters from '../components/ResetAllFilters.vue';
 import * as Utils from '../utils';
 
 export default {
@@ -45,6 +47,7 @@ export default {
     ColumnsConfig,
     Grid,
     Pagination,
+    ResetAllFilters,
   },
   data() {
     return {
