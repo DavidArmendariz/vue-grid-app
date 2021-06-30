@@ -7,7 +7,7 @@ import {
   joinArray,
   processRow,
   shouldPersistedFieldBeIncluded,
-} from '../../../src/utils';
+} from '..';
 
 describe('getColumnKeys', () => {
   it('should return column keys', () => {

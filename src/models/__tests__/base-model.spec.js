@@ -1,4 +1,4 @@
-import BaseModel from '../../../src/models/base-model';
+import BaseModel from '../base-model';
 
 const LIMIT = 2;
 const COLUMN_TYPES = {

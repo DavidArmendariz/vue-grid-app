@@ -113,7 +113,7 @@ export default {
     },
     checkDisable(checked) {
       const checkedNumber = this.$refs.inputs.querySelectorAll('input:checked').length;
-      return checkedNumber === 1 && checked;
+      return (checkedNumber === 1 && checked && this.uniqueValues.length > 1) || this.uniqueValues.length === 1;
     },
   },
 };
