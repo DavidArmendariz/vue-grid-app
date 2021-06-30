@@ -155,24 +155,39 @@ export default {
   justify-content: center;
   position: relative;
 
-  &:hover {
-    span.tooltip {
-      display: block;
+  .tooltip {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #555 transparent transparent transparent;
     }
   }
-}
 
-.tooltip {
-  display: none;
-  position: absolute;
-  z-index: 1;
-  background-color: white;
-  border: 1px solid #5c99b7;
-  border-radius: 1rem;
-  padding: 5px;
-  color: #5c99b7;
-  top: -5px;
-  left: 105%;
-  overflow-wrap: break-word;
+  &:hover {
+    .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
 }
 </style>
