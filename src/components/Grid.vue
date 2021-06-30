@@ -148,6 +148,7 @@ export default {
 .cell {
   height: 50px;
   padding: 8px;
+  margin: 8px 0;
   display: flex;
   align-items: center;
   justify-content: center;
